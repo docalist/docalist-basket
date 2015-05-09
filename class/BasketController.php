@@ -47,7 +47,7 @@ class BasketController extends Controller{
     ];
 
     /**
-     * Nb de notices "baskettables" trouvées entre loop-start et loop-end
+     * Nombre de notices "baskettables" trouvées entre loop-start et loop-end
      * Utilisé pour déterminer s'il faut appeller enqueue_scripts.
      * Mis à jour par addClass()
      *
@@ -58,7 +58,7 @@ class BasketController extends Controller{
     public function __construct() {
         parent::__construct('docalist-biblio-basket', 'admin-ajax.php');
 
-        $this->basket = docalist('user-data')->basket('default'); /* @var $basket Basket */
+        $this->basket = docalist('user-data')->basket(); /* @var $basket Basket */
 
         add_action('loop_start', function(WP_Query $query) {
             if ($query->is_main_query()) {
@@ -87,16 +87,13 @@ class BasketController extends Controller{
             }
         });
 
-        add_filter('docalist_search_create_request', function(SearchRequest $request = null, WP_Query $query) {
-            if (isset($request) && $request->isSearch()) {
-                if (isset($_REQUEST['_basket'])) {
-                    $basket = docalist('user-data')->basket($_REQUEST['_basket']); /* @var $basket Basket */
-                    $request->idsFilter($basket->data());
-                }
+        add_filter('docalist_search_create_request', function(SearchRequest $request = null) {
+            if (isset($request) && $request->isSearch() && isset($_REQUEST['_basket'])) {
+                $request->idsFilter($this->basket->data());
             }
 
             return $request;
-        }, 100, 2);
+        }, 100);
     }
 
     /**
@@ -128,7 +125,7 @@ class BasketController extends Controller{
         if ($this->isBasketable($post)) {
             ++$this->count;
             $classes[] = 'basket';
-            $classes[] = $this->basket->has($post->ID) ? 'class-active' : 'class-inactive';
+            $classes[] = $this->basket->has($post->ID) ? 'basket-active' : 'basket-inactive';
         }
 
         return $classes;
@@ -183,21 +180,19 @@ class BasketController extends Controller{
      * Ajoute des notices au panier.
      *
      * @param string $refs
-     * @param string $basket
      *
      * @return JsonResponse
      */
-    public function actionAdd($refs, $basket = 'default') {
-        $basket = docalist('user-data')->basket($basket); /* @var $basket Basket */
-        $nb = $basket->count();
+    public function actionAdd($refs) {
+        $nb = $this->basket->count();
         $refs = $this->refs($refs);
-        $basket->add($refs)->save();
-        $count = $basket->count();
+        $this->basket->add($refs)->save();
+        $count = $this->basket->count();
         $nb = $count - $nb;
 
         $result = [];
         foreach($refs as $ref) {
-            $result[$ref] = $basket->has($ref);
+            $result[$ref] = $this->basket->has($ref);
         }
         return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $count, 'result' => $result]);
     }
@@ -206,21 +201,19 @@ class BasketController extends Controller{
      * Enlève des notices du panier.
      *
      * @param string $refs
-     * @param string $basket
      *
      * @return JsonResponse
      */
-    public function actionRemove($refs, $basket = 'default') {
-        $basket = docalist('user-data')->basket($basket); /* @var $basket Basket */
-        $nb = $basket->count();
+    public function actionRemove($refs) {
+        $nb = $this->basket->count();
         $refs = $this->refs($refs);
-        $basket->remove($refs)->save();
-        $count = $basket->count();
+        $this->basket->remove($refs)->save();
+        $count = $this->basket->count();
         $nb -= $count;
 
         $result = [];
         foreach($refs as $ref) {
-            $result[$ref] = $basket->has($ref);
+            $result[$ref] = $this->basket->has($ref);
         }
         return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $count, 'result' => $result]);
     }
@@ -228,28 +221,21 @@ class BasketController extends Controller{
     /**
      * Vide le panier.
      *
-     * @param string $basket
-     *
      * @return JsonResponse
      */
-    public function actionClear($basket = 'default') {
-        $basket = docalist('user-data')->basket($basket); /* @var $basket Basket */
-        $nb = $basket->count();
-        $basket->clear()->save();
+    public function actionClear() {
+        $nb = $this->basket->count();
+        $this->basket->clear()->save();
 
-        return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $basket->count()]);
+        return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $this->basket->count()]);
     }
 
     /**
      * Affiche le contenu du panier.
      *
-     * @param string $basket
-     *
      * @return JsonResponse
      */
-    public function actionDump($basket = 'default') {
-        $basket = docalist('user-data')->basket($basket); /* @var $basket Basket */
-
-        return $this->json(['action' => $this->action(), 'count' => $basket->count(), 'refs' => $basket->data()]);
+    public function actionDump() {
+        return $this->json(['action' => $this->action(), 'count' => $this->basket->count(), 'refs' => $this->basket->data()]);
     }
 }
