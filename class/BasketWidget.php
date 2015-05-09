@@ -83,15 +83,19 @@ class BasketWidget extends WP_Widget {
         }
 
         // Début des liens
-        $link = '<li class="%s" style="%s" title="%s"><a href="#">%s</a></li>';
+        $link = '<li class="%s" style="%s" title="%s"><a href="%s">%s</a></li>';
         echo '<ul>';
+
+        // Détermine l'url de la page "afficher le panier
+        $isBasketPage = docalist('basket-controller')->isBasketPage();
 
         // Lien "Afficher le panier"
         $label = strtr($settings['show'], ['%d' => '<span class="basket-count">' . $count . '</span>']);
         $label && printf($link,
             'basket-show',
-            $count ? '' : 'display:none',
-            __('Lance une nouvelle recherche pour afficher la sélection et vous permettre de l\'exploiter.', 'docalist-biblio'),
+            ($count && !$isBasketPage) ? '' : 'display:none',
+            __('Affiche les notices sélectionnées.', 'docalist-biblio'),
+            esc_url(docalist('basket-controller')->basketPageUrl()),
             $label
         );
 
@@ -101,6 +105,7 @@ class BasketWidget extends WP_Widget {
             'basket-addpage',
             'display:none',
             __('Ajoute à la sélection toutes les notices de la page en cours qui ne sont pas encore sélectionnées.', 'docalist-biblio'),
+            '#',
             $label
         );
 
@@ -110,6 +115,7 @@ class BasketWidget extends WP_Widget {
             'basket-removepage',
             'display:none',
             __('Enlève de la sélection toutes les notices de la page en cours qui sont actuellement sélectionnées.', 'docalist-biblio'),
+            '#',
             $label
         );
 
@@ -120,6 +126,7 @@ class BasketWidget extends WP_Widget {
             'basket-clear',
             $count ? '' : 'display:none',
             __('Vide la sélection et enlève toutes les notices actuellement sélectionnées.', 'docalist-biblio'),
+            '#',
             $label
         );
 
