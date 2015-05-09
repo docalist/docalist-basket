@@ -14,16 +14,10 @@
  */
 namespace Docalist\Biblio\UserData;
 
-use stdClass as StdClass;
-use DateTime;
 use WP_Widget;
-use Docalist;
-use Docalist\Uri;
 use Docalist\Forms\Fragment;
 use Docalist\Forms\Themes;
 use Docalist\Utils;
-use Docalist\Biblio\UserData\Basket;
-use Docalist\Biblio\Database;
 
 class BasketWidget extends WP_Widget {
     public function __construct() {
