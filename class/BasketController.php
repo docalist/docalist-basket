@@ -43,7 +43,7 @@ class BasketController extends Controller{
     protected $settings = [
         'active' => '<p class="basket-remove">- <a href="#">Désélectionner</a></p>',
         'inactive' => '<p class="basket-add">+ <a href="#">Sélectionner</a></p>',
-        'before-content' => true,
+        'before-content' => false,
     ];
 
     /**
