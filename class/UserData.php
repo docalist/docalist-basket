@@ -173,24 +173,35 @@ class UserData {
                 throw new InvalidArgumentException('If name is null, user must also be null');
             }
 
-            // Le panier par défaut s'appelle "1"
-            $name = 1;
-
-            // Si on a cookie avec un autre nom, on le prend après validation
-            if (isset($_COOKIE['basket'])) {
-                $options = [
-                    'flags' => FILTER_NULL_ON_FAILURE,
-                    'options' => [
-                        'min_range' => 1,
-                        'max_range' => 10, // 10 paniers, c'est déjà pas mal, non ?
-                        'default'   => $name
-                    ]
-                ];
-
-                $name = filter_var($_COOKIE['basket'], FILTER_VALIDATE_INT, $options);
-            }
+            // Recupère le nom du panier en cours
+            $name = $this->currentBasketName();
         }
 
         return $this->get('basket', $name, $user);
+    }
+
+    /**
+     * Retourne le nom du panier en cours de l'utilisateur
+     *
+     * @return string
+     */
+    public function currentBasketName() {
+        // Le panier par défaut s'appelle "1"
+        $name = '1';
+
+        // Si on a cookie avec un autre nom, on le prend après validation
+        if (isset($_COOKIE['basket'])) {
+            $options = [
+                'options' => [
+                    'min_range' => 1,
+                    'max_range' => 10, // 10 paniers, c'est déjà pas mal, non ?
+                    'default'   => 1
+                ]
+            ];
+
+            $name = (string) filter_var($_COOKIE['basket'], FILTER_VALIDATE_INT, $options);
+        }
+
+        return $name;
     }
 }
