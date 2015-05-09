@@ -44,7 +44,15 @@ class BasketController extends Controller{
         'active' => '<p class="basket-remove">- <a href="#">Désélectionner</a></p>',
         'inactive' => '<p class="basket-add">+ <a href="#">Sélectionner</a></p>',
         'before-content' => false,
+        'page' => 4482198,
     ];
+
+    /**
+     * Indique si on est sur la page du panier.
+     *
+     * @var boolean
+     */
+    protected $isBasketPage = false;
 
     /**
      * Nombre de notices "baskettables" trouvées entre loop-start et loop-end
@@ -87,13 +95,49 @@ class BasketController extends Controller{
             }
         });
 
-        add_filter('docalist_search_create_request', function(SearchRequest $request = null) {
-            if (isset($request) && $request->isSearch() && isset($_REQUEST['_basket'])) {
+        add_filter('docalist_search_create_request', function(SearchRequest $request = null, WP_Query $query) {
+            // On a une page spécifique pour la panier, teste si on est dessus
+            if ($this->settings['page']) {
+                if ($query->get_queried_object_id() === $this->settings['page']) {
+                    $this->isBasketPage = true;
+                    is_null($request) && $request = new SearchRequest($_REQUEST);
+                }
+            }
+
+            // Pas de page "panier", le panier est une recherche avec "?_basket"
+            elseif (isset($request) && $request->isSearch() && isset($_REQUEST['_basket'])) {
+                $this->isBasketPage = true;
+            }
+
+            if ($this->isBasketPage) {
                 $request->idsFilter($this->basket->data());
+                $request->isSearch(true);
             }
 
             return $request;
-        }, 100);
+        }, 100, 2);
+    }
+
+    /**
+     * Indique si on est sur la page du panier.
+     *
+     * @return boolean
+     */
+    public function isBasketPage() {
+        return $this->isBasketPage;
+    }
+
+    /**
+     * Retourne l'url de la page du panier.
+     *
+     * @return string
+     */
+    public function basketPageUrl() {
+        if ($this->settings['page']) {
+            return get_the_permalink($this->settings['page']);
+        }
+
+        return get_permalink(docalist('docalist-search-engine')->searchPageID());
     }
 
     /**
