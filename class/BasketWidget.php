@@ -26,37 +26,20 @@ use Docalist\Biblio\UserData\Basket;
 use Docalist\Biblio\Database;
 
 class BasketWidget extends WP_Widget {
-    /**
-     * Le formulaire permettant de paramètrer le widget.
-     *
-     * @var Fragment
-     */
-//    protected $settingsForm;
-
-    /**
-     *
-     */
     public function __construct() {
         $id = 'docalist-biblio-basket';
         parent::__construct(
-
             // Base ID. Inutile de préfixer avec "widget", WordPress le fait
             $id,
 
-            // Titre (nom) du widget affiche en back office
-            __('Panier de notices', 'docalist-biblio'), // Name
+            // Titre (nom) du widget affiché en back office
+            __('Panier de notices', 'docalist-biblio'),
 
             // Args
-            array(
+            [
                 'description' => __('Panier de notices', 'docalist-biblio'),
                 'classname' => $id, // par défaut, WordPress met 'widget_'.$id
-            )
-
-//             // control_options
-//             array(
-//                 'width' => 800, // Largeur requise pour le formulaire de saisie des paramètres
-//                 'height' => 800,
-//             )
+            ]
         );
     }
 
@@ -79,29 +62,17 @@ class BasketWidget extends WP_Widget {
      * @see http://codex.wordpress.org/Function_Reference/register_sidebar
      */
     public function widget($context, $settings) {
+        // Seuls les utilisateurs loggués peuvent avoir un panier
+        if (! is_user_logged_in()) {
+            return;
+        }
+
         // TODO: à étudier, avec le widget customizer, on peut être appellé avec
         // des settings vides. Se produit quand on ajoute un nouveau widget dans
         // une sidebar, tant qu'on ne modifie aucun paramètre. Dès qu'on modifie
         // l'un des paramètres du widget, celui-ci est correctement enregistré
         // et dès lors on a les settings.
         $settings += $this->defaultSettings();
-
-        // Seuls les utilisateurs loggués peuvent avoir un panier
-        if (! is_user_logged_in()) {
-            return;
-        }
-
-        // Seules les bases documentaires peuvent avoir un panier
-//         if ('' === $postType = get_query_var('post_type')) {
-//             return;
-//         }
-//         $database = docalist('docalist-biblio')->database($postType); /* @var $database Database */
-//         if (! $database->settings()->hasCart()) {
-//             return;
-//         }
-
-//         wp_enqueue_script('docalist-biblio-userdata-basket');
-//         wp_enqueue_style('docalist-biblio-userdata-basket');
 
         // Charge le panier
         $basket = docalist('user-data')->basket('default'); /*@var $basket Basket */
@@ -271,8 +242,7 @@ class BasketWidget extends WP_Widget {
     public function update($new, $old) {
         $settings = $this->settingsForm()->bind($new)->data();
 
-        // validation
-        // to do
+        // TODO validation
 
         return $settings;
     }
