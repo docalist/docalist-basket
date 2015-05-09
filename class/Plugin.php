@@ -29,7 +29,7 @@ class Plugin {
         });
 
         // Si l'utilisateur en cours n'est pas connecté, aucun service n'est créé
-        if (is_user_logged_in()) {
+        if (! is_user_logged_in()) {
             return;
         }
 
