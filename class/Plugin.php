@@ -23,27 +23,25 @@ class Plugin {
         // Charge les fichiers de traduction du plugin
         load_plugin_textdomain('docalist-biblio-userdata', false, 'docalist-biblio-userdata/languages');
 
-        // Créée le service de gestion des données utilisateur
-        docalist('services')->add('user-data', function() {
-            return new UserData();
-        });
-
         // Déclare le widget "Basket"
         add_action('widgets_init', function() {
             register_widget('Docalist\Biblio\UserData\BasketWidget');
         });
 
-        // Déclare nos JS et CSS
-        require_once dirname(__DIR__) . '/assets/register.php';
+        // Si l'utilisateur en cours n'est pas connecté, aucun service n'est créé
+        if (is_user_logged_in()) {
+            return;
+        }
 
-//         $settings = [
-//             'administrator' => 1,
-//             'author' => 1,
-//         ];
+        // Créée le service de gestion des données utilisateur
+        docalist('services')->add('user-data', function() {
+            return new UserData();
+        });
 
         // Crée les actions ajax pour le panier
-        if (is_user_logged_in()) {
-            docalist('services')->add('basket-controller', new BasketController());
-        }
+        docalist('services')->add('basket-controller', new BasketController());
+
+        // Déclare nos assets
+        require_once dirname(__DIR__) . '/assets/register.php';
     }
 }
