@@ -69,7 +69,7 @@ class BasketWidget extends WP_Widget {
         $settings += $this->defaultSettings();
 
         // Charge le panier
-        $basket = docalist('user-data')->basket('default'); /*@var $basket Basket */
+        $basket = docalist('user-data')->basket(); /* @var $basket Basket */
         $count = $basket->count();
 
         // Début du widget
