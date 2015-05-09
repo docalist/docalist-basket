@@ -1,0 +1,22 @@
+/**
+ * This file is part of the "Docalist Biblio UserData" plugin.
+ *
+ * Copyright (C) 2015-2015 Daniel Ménard
+ *
+ * For copyright and license information, please view the
+ * LICENSE.txt file that was distributed with this source code.
+ *
+ * @package     Docalist\Biblio
+ * @subpackage  UserData
+ * @author      Daniel Ménard <daniel.menard@laposte.net>
+ * @version     SVN: $Id$
+ */
+.basket-active {
+    background-color: #f4f4f4 !important;
+    transition: background-color 1s;
+}
+
+.basket-inactive {
+    background-color: inherit !important;
+    transition: background-color 1s;
+}
