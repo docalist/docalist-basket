@@ -96,7 +96,7 @@ class BasketController extends Controller{
         });
 
         add_filter('docalist_search_create_request', function(SearchRequest $request = null, WP_Query $query) {
-            // On a une page spécifique pour la panier, teste si on est dessus
+            // On a une page spécifique pour le panier, teste si on est dessus
             if ($this->settings['page']) {
                 if ($query->get_queried_object_id() === $this->settings['page']) {
                     $this->isBasketPage = true;
@@ -137,7 +137,7 @@ class BasketController extends Controller{
             return get_the_permalink($this->settings['page']);
         }
 
-        return get_permalink(docalist('docalist-search-engine')->searchPageID());
+        return get_permalink(docalist('docalist-search-engine')->searchPage());
     }
 
     /**
