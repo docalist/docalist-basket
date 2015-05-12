@@ -22,7 +22,7 @@ use WP_Post;
 
 class BasketController extends Controller{
     /**
-     * Actiob par défaut du contrôleur.
+     * Action par défaut du contrôleur.
      *
      * @var string
      */
