@@ -100,7 +100,6 @@ class BasketController extends Controller{
             // Si on a une page spécifique pour le panier, teste si on est dessus
             if ($query->get_queried_object_id() === $this->settings->basketpage()) {
                 $this->isBasketPage = true;
-                is_null($request) && $request = new SearchRequest($_REQUEST);
             }
 
             // Pas de page "panier", le panier est une recherche avec "?_basket"
@@ -109,8 +108,11 @@ class BasketController extends Controller{
             }
 
             if ($this->isBasketPage) {
-                $request->idsFilter($this->basket->data());
-                $request->isSearch(true);
+                if (! $this->basket->isEmpty()) {
+                    is_null($request) && $request = new SearchRequest($_REQUEST);
+                    $request->idsFilter($this->basket->data());
+                    $request->isSearch(true);
+                }
             }
 
             return $request;
