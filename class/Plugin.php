@@ -19,9 +19,24 @@ namespace Docalist\Biblio\UserData;
  * les notices qui ont un lien.
  */
 class Plugin {
+    /**
+     * Les paramètres du plugin.
+     *
+     * @var Settings
+     */
+    protected $settings;
+
     public function __construct() {
         // Charge les fichiers de traduction du plugin
         load_plugin_textdomain('docalist-biblio-userdata', false, 'docalist-biblio-userdata/languages');
+
+        // Charge la configuration du plugin
+        $this->settings = new Settings(docalist('settings-repository'));
+
+        // Crée la page de réglages du plugin
+        add_action('admin_menu', function() {
+            new SettingsPage($this->settings);
+        });
 
         // Déclare le widget "Basket"
         add_action('widgets_init', function() {
@@ -39,7 +54,7 @@ class Plugin {
         });
 
         // Crée les actions ajax pour le panier
-        docalist('services')->add('basket-controller', new BasketController());
+        docalist('services')->add('basket-controller', new BasketController($this->settings));
 
         // Déclare nos assets
         require_once dirname(__DIR__) . '/assets/register.php';
