@@ -67,7 +67,6 @@ class SettingsPage extends AdminPage {
      * Paramètres du panier.
      */
     public function actionBasketSettings() {
-        $error = '';
         if ($this->isPost()) {
             try {
                 $_POST = wp_unslash($_POST);
