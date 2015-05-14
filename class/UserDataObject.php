@@ -153,6 +153,15 @@ class UserDataObject implements Countable {
     }
 
     /**
+     * Indique si l'objet est vide.
+     *
+     * @return boolean
+     */
+    public function isEmpty() {
+        return empty($this->data);
+    }
+
+    /**
      * Indique si l'objet contient l'élément dont la clé est indiquée.
      *
      * @param scalar $key
