@@ -36,16 +36,11 @@ class BasketController extends Controller{
     protected $basket;
 
     /**
-     * Settings du panier.
+     * Les paramètres du plugin.
      *
-     * @var array
+     * @var Settings
      */
-    protected $settings = [
-        'active' => '<p class="basket-remove">- <a href="#">Désélectionner</a></p>',
-        'inactive' => '<p class="basket-add">+ <a href="#">Sélectionner</a></p>',
-        'before-content' => false,
-        'page' => 4482198,
-    ];
+    protected $settings;
 
     /**
      * Indique si on est sur la page du panier.
@@ -63,9 +58,15 @@ class BasketController extends Controller{
      */
     protected $count;
 
-    public function __construct() {
+    /**
+     * Construit le gestionnaire de panier.
+     *
+     * @param Settings $settings Paramètres du plugin.
+     */
+    public function __construct(Settings $settings) {
         parent::__construct('docalist-biblio-basket', 'admin-ajax.php');
 
+        $this->settings = $settings;
         $this->basket = docalist('user-data')->basket(); /* @var $basket Basket */
 
         add_action('loop_start', function(WP_Query $query) {
@@ -86,8 +87,8 @@ class BasketController extends Controller{
                     wp_enqueue_style('docalist-biblio-userdata-basket'); // debug only
                     wp_enqueue_script('docalist-biblio-userdata-basket');
                     $settings = [
-                        'active' => $this->settings['active'],
-                        'inactive' => $this->settings['inactive'],
+                        'active' => $this->settings->htmlActive(),
+                        'inactive' => $this->settings->htmlInactive(),
                         'url' => $this->baseUrl()
                     ];
                     wp_localize_script('docalist-biblio-userdata-basket', 'docalistBiblioUserdataBasketSettings', $settings);
@@ -96,12 +97,10 @@ class BasketController extends Controller{
         });
 
         add_filter('docalist_search_create_request', function(SearchRequest $request = null, WP_Query $query) {
-            // On a une page spécifique pour le panier, teste si on est dessus
-            if ($this->settings['page']) {
-                if ($query->get_queried_object_id() === $this->settings['page']) {
-                    $this->isBasketPage = true;
-                    is_null($request) && $request = new SearchRequest($_REQUEST);
-                }
+            // Si on a une page spécifique pour le panier, teste si on est dessus
+            if ($query->get_queried_object_id() === $this->settings->basketpage()) {
+                $this->isBasketPage = true;
+                is_null($request) && $request = new SearchRequest($_REQUEST);
             }
 
             // Pas de page "panier", le panier est une recherche avec "?_basket"
@@ -133,8 +132,8 @@ class BasketController extends Controller{
      * @return string
      */
     public function basketPageUrl() {
-        if ($this->settings['page']) {
-            return get_the_permalink($this->settings['page']);
+        if ($this->settings->basketpage()) {
+            return get_the_permalink($this->settings->basketpage());
         }
 
         return get_permalink(docalist('docalist-search-engine')->searchPage());
@@ -188,8 +187,8 @@ class BasketController extends Controller{
         global $post;
 
         if ($this->isBasketable($post)) {
-            $html = $this->settings[$this->basket->has($post->ID) ? 'active' : 'inactive'];
-            $content = $this->settings['before-content'] ? ($html . $content) : ($content . $html);
+            $html = $this->basket->has($post->ID) ? $this->settings->htmlActive() : $this->settings->htmlInactive();
+            $content = $this->settings->linksBeforeContent() ? ($html . $content) : ($content . $html);
         }
 
         return $content;
