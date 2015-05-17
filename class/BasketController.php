@@ -109,10 +109,30 @@ class BasketController extends Controller{
 
             if ($this->isBasketPage) {
                 if (! $this->basket->isEmpty()) {
-                    is_null($request) && $request = new SearchRequest($_REQUEST);
-                    $request->idsFilter($this->basket->data());
+                    if (is_null($request)) {
+                        $request = docalist('docalist-search-engine')->defaultRequest();
+                    }
+
+                    // cf. https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-filter.html
+                    $request->addHiddenFilter([
+                        'ids' => ['values' => $this->basket->data()]
+                    ]);
+
+                    /*
+                     * Remarque : la requête génèrée n'est pas optimale car on
+                     * n'indique pas le type, seulement l'ID.
+                     * Du coup, pour chaque ID, ES génère un "OR" pour tous les types :
+                     * (_uid:prisme#id1 OR _uid:page#id1 _uid:post#id1) OR (idem pour id2) OR etc.
+                     * Néanmoins, cela fonctionne car nos ID sont uniques.
+                     * Le filtre ids accepte un argument "type", mais à notre stade, on
+                     * ne connaît pas le type, seulement l'id.
+                     * Comme ça fonctionne très bien comme ça, inutile de s'embêter.
+                     */
+
+                    // Indique à docalist-search qu'on veut afficher les réponses
                     $request->isSearch(true);
                 }
+                // else : le panier est vide, laisse wp afficher la page panier
             }
 
             return $request;
