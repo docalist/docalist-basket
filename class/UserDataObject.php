@@ -293,7 +293,7 @@ class UserDataObject implements Countable {
 
     protected function unserialize($data) {
         // Décode le json
-        $data = json_decode($data, true, 512, JSON_BIGINT_AS_STRING);
+        $data = json_decode($data, true, 512);
 
         // On doit obtenir un tableau (éventuellement vide), sinon erreur
         if (! is_array($data)) {
