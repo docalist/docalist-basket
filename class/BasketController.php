@@ -112,6 +112,7 @@ class BasketController extends Controller{
                     if (is_null($request)) {
                         $request = docalist('docalist-search-engine')->defaultRequest();
                     }
+                    $request->searchPageUrl($this->basketPageUrl());
 
                     // cf. https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-filter.html
                     $request->addHiddenFilter([
