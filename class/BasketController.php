@@ -29,6 +29,15 @@ class BasketController extends Controller{
     protected $defaultAction = 'Dump';
 
     /**
+     * Définit les droits requis pour exécuter les actions de ce contrôleur.
+     *
+     * Le tableau est de la forme "nom de l'action" => "capacité requise".
+     */
+    protected $capability = [
+        'default' => 'read',
+    ];
+
+    /**
      * Panier en cours
      *
      * @var Basket
