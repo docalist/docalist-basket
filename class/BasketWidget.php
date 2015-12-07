@@ -10,17 +10,16 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Biblio\UserData;
 
 use WP_Widget;
-use Docalist\Forms\Fragment;
-use Docalist\Forms\Themes;
-use Docalist\Utils;
+use Docalist\Forms\Container;
 
-class BasketWidget extends WP_Widget {
-    public function __construct() {
+class BasketWidget extends WP_Widget
+{
+    public function __construct()
+    {
         $id = 'docalist-biblio-basket';
         parent::__construct(
             // Base ID. Inutile de préfixer avec "widget", WordPress le fait
@@ -55,7 +54,8 @@ class BasketWidget extends WP_Widget {
      *
      * @see http://codex.wordpress.org/Function_Reference/register_sidebar
      */
-    public function widget($context, $settings) {
+    public function widget($context, $settings)
+    {
         // Seuls les utilisateurs loggués peuvent avoir un panier
         if (! is_user_logged_in()) {
             return;
@@ -142,39 +142,40 @@ class BasketWidget extends WP_Widget {
      *
      * @return Fragment
      */
-    protected function settingsForm() {
-        $form = new Fragment();
+    protected function settingsForm()
+    {
+        $form = new Container();
 
         $form->tag('a')
-            ->attribute('class', 'dashicons dashicons-editor-help alignright')
-            ->attribute('onclick', 'jQuery(".basket-help").toggle("slow");return false;');
+            ->addClass('dashicons dashicons-editor-help alignright')
+            ->setAttribute('onclick', 'jQuery(".basket-help").toggle("slow");return false;');
 
         $help = __('
             Les zones suivantes vous permettent de paramétrer le titre et les libellés des liens affichés dans le widget panier.
             Vous pouvez utiliser <code>%d</code> pour indiquer le nombre de notices ajoutées/supprimées/présentes dans la sélection.
             Pour les liens, si vous n\'indiquez aucun libellé, le lien correspondant ne sera pas affiché dans le widget.
             ', 'docalist-biblio');
-        $form->tag('p.basket-help', $help)->attribute('style', 'display: none');
+        $form->tag('p.basket-help', $help)->setAttribute('style', 'display: none');
 
         $form->input('title')
-            ->attribute('id', $this->get_field_id('title')) // pour que le widget affiche le bon titre en backoffice. cf widgets.dev.js, fonction appendTitle(), L250
-            ->label(__('<b>Titre du widget</b>', 'docalist-biblio'))
+            ->setAttribute('id', $this->get_field_id('title')) // pour que le widget affiche le bon titre en backoffice. cf widgets.dev.js, fonction appendTitle(), L250
+            ->setLabel(__('<b>Titre du widget</b>', 'docalist-biblio'))
             ->addClass('widefat');
 
         $form->input('show')
-            ->label(__('<b>Afficher la sélection</b>', 'docalist-biblio'))
+            ->setLabel(__('<b>Afficher la sélection</b>', 'docalist-biblio'))
             ->addClass('widefat');
 
         $form->input('addpage')
-            ->label(__('<b>Ajouter les notices de la page</b>', 'docalist-biblio'))
+            ->setLabel(__('<b>Ajouter les notices de la page</b>', 'docalist-biblio'))
             ->addClass('widefat');
 
         $form->input('removepage')
-            ->label(__('<b>Enlever les notices de la page</b>', 'docalist-biblio'))
+            ->setLabel(__('<b>Enlever les notices de la page</b>', 'docalist-biblio'))
             ->addClass('widefat');
 
         $form->input('clear')
-            ->label(__('<b>Vider la sélection</b>', 'docalist-biblio'))
+            ->setLabel(__('<b>Vider la sélection</b>', 'docalist-biblio'))
             ->addClass('widefat');
 
 
@@ -186,13 +187,14 @@ class BasketWidget extends WP_Widget {
      *
      * @return array
      */
-    protected function defaultSettings() {
+    protected function defaultSettings()
+    {
         return [
-            'title'      => __('Panier (%d)', 'docalist-biblio'),
-            'show'       => __('Afficher', 'docalist-biblio'),
-            'addpage'    => __('Ajouter tout (%d)', 'docalist-biblio'),
+            'title' => __('Panier (%d)', 'docalist-biblio'),
+            'show' => __('Afficher', 'docalist-biblio'),
+            'addpage' => __('Ajouter tout (%d)', 'docalist-biblio'),
             'removepage' => __('Enlever la page (%d)', 'docalist-biblio'),
-            'clear'      => __('Vider', 'docalist-biblio'),
+            'clear' => __('Vider', 'docalist-biblio'),
         ];
     }
 
@@ -201,7 +203,8 @@ class BasketWidget extends WP_Widget {
      *
      * @see WP_Widget::form()
      */
-    public function form($instance) {
+    public function form($instance)
+    {
         // Récupère le formulaire à afficher
         $form = $this->settingsForm();
 
@@ -216,17 +219,10 @@ class BasketWidget extends WP_Widget {
         // Pour que les facettes soient orrectement clonées, le champ facets
         // définit explicitement repeatLevel=2 (cf. settingsForm)
         $name = 'widget-' . $this->id_base . '[' . $this->number . ']';
-        $form->name($name);
-
-        // Envoie les assets requis par ce formulaire
-        // Comme le début de la page a déjà été envoyé, les assets vont
-        // être ajoutés en fin de page. On n'a pas de FOUC car le formulaire
-        // ne sera affiché que lorsque l'utilisateur le demandera.
-        $theme = 'base';
-        Utils::enqueueAssets(Themes::assets($theme)->add($form->assets()));
+        $form->setName($name);
 
         // Affiche le formulaire
-        $form->render($theme);
+        $form->display();
     }
 
     /**
@@ -240,8 +236,9 @@ class BasketWidget extends WP_Widget {
      *
      * @return array La version corrigée des paramètres.
      */
-    public function update($new, $old) {
-        $settings = $this->settingsForm()->bind($new)->data();
+    public function update($new, $old)
+    {
+        $settings = $this->settingsForm()->bind($new)->getData();
 
         // TODO validation
 
