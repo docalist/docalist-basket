@@ -9,7 +9,6 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 jQuery(document).ready(function($) {
     /** 

@@ -10,14 +10,14 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Biblio\UserData;
 
 use Countable;
 use Exception;
 
-class UserDataObject implements Countable {
+class UserDataObject implements Countable
+{
     /**
      * Le type de l'objet.
      *
@@ -61,13 +61,14 @@ class UserDataObject implements Countable {
     protected $isModified;
 
     /**
-     * Initialise et charge un objet User Data
+     * Initialise et charge un objet User Data.
      *
      * @param string $type Le type de l'objet.
      * @param string $name L'identifiant de l'objet.
      * @param int $user L'ID de l'utilisateur propriétaire de l'objet.
      */
-    public function __construct($type, $name, $user) {
+    public function __construct($type, $name, $user)
+    {
         if (!ctype_alnum($type)) {
             throw new Exception("Invalid user data object type '$type'");
         }
@@ -92,7 +93,8 @@ class UserDataObject implements Countable {
      *
      * @return string
      */
-    public function type() {
+    public function type()
+    {
         return $this->type;
     }
 
@@ -101,7 +103,8 @@ class UserDataObject implements Countable {
      *
      * @return string
      */
-    public function name() {
+    public function name()
+    {
         return $this->name;
     }
 
@@ -110,7 +113,8 @@ class UserDataObject implements Countable {
      *
      * @return string
      */
-    public function user() {
+    public function user()
+    {
         return $this->user;
     }
 
@@ -119,7 +123,8 @@ class UserDataObject implements Countable {
      *
      * @return string
      */
-    public function id() {
+    public function id()
+    {
         return $this->id;
     }
 
@@ -128,16 +133,18 @@ class UserDataObject implements Countable {
      *
      * @return array
      */
-    public function data() {
+    public function data()
+    {
         return $this->data;
     }
 
     /**
      * Indique si les données de l'objet ont été modifiées.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isModified() {
+    public function isModified()
+    {
         return $this->isModified;
     }
 
@@ -148,16 +155,18 @@ class UserDataObject implements Countable {
      *
      * @see Countable::count()
      */
-    public function count() {
+    public function count()
+    {
         return count($this->data);
     }
 
     /**
      * Indique si l'objet est vide.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isEmpty() {
+    public function isEmpty()
+    {
         return empty($this->data);
     }
 
@@ -166,9 +175,10 @@ class UserDataObject implements Countable {
      *
      * @param scalar $key
      *
-     * @return boolean
+     * @return bool
      */
-    public function has($key) {
+    public function has($key)
+    {
         return isset($this->data[$key]);
     }
 
@@ -179,7 +189,8 @@ class UserDataObject implements Countable {
 
      * @return mixed Les données de l'élément ou null si l'élément n'existe pas.
      */
-    public function get($key) {
+    public function get($key)
+    {
         return isset($this->data[$key]) ? $this->data[$key] : null;
     }
 
@@ -191,7 +202,8 @@ class UserDataObject implements Countable {
      *
      * @return self
      */
-    public function set($key, $data) {
+    public function set($key, $data)
+    {
         if (! isset($this->data[$key]) || $this->data[$key] !== $data) {
             $this->data[$key] = $data;
             $this->isModified = true;
@@ -208,7 +220,8 @@ class UserDataObject implements Countable {
      *
      * @return self
      */
-    public function clear($key = null) {
+    public function clear($key = null)
+    {
         // Vider tout
         if (is_null($key)) {
             if (!empty($this->data)) {
@@ -235,7 +248,8 @@ class UserDataObject implements Countable {
      *
      * @return self
      */
-    protected function load() {
+    protected function load()
+    {
         // Essaie de charger le meta
         $data = get_user_meta($this->user, $this->id, true);
 
@@ -258,7 +272,8 @@ class UserDataObject implements Countable {
      *
      * @return self
      */
-    public function save() {
+    public function save()
+    {
         // Rien à faire si l'objet n'a pas été modifié
         if (! $this->isModified) {
             return $this;
@@ -287,11 +302,13 @@ class UserDataObject implements Countable {
         return $this;
     }
 
-    protected function serialize() {
+    protected function serialize()
+    {
         return json_encode($this->data(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
-    protected function unserialize($data) {
+    protected function unserialize($data)
+    {
         // Décode le json
         $data = json_decode($data, true, 512);
 

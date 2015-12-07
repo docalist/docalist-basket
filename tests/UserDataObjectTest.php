@@ -10,21 +10,22 @@
  * @package     Docalist
  * @subpackage  Tests\Biblio\UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Tests\Biblio\UserData;
 
 use WP_UnitTestCase;
-
 use Docalist\Biblio\UserData\UserDataObject;
 
-class UserDataObjectTest extends WP_UnitTestCase {
-    public function setup() {
+class UserDataObjectTest extends WP_UnitTestCase
+{
+    public function setup()
+    {
         wp_set_current_user(1);
         delete_user_meta(get_current_user_id(), 'docalist-object-test');
     }
 
-    public function testNew() {
+    public function testNew()
+    {
         $o = new UserDataObject('object', 'test', 1);
 
         $this->assertSame($o->type(), 'object');
@@ -37,7 +38,8 @@ class UserDataObjectTest extends WP_UnitTestCase {
         $this->assertSame($o->data(), []);
     }
 
-    public function testGetSet() {
+    public function testGetSet()
+    {
         $o = new UserDataObject('object', 'test', 1);
 
         $o->set(10, 'dix');
@@ -68,7 +70,8 @@ class UserDataObjectTest extends WP_UnitTestCase {
         $this->assertSame($o->data(), ['10' => 'dix', '15' => 'quinze', '20' => 'vingt']);
     }
 
-    public function testClear() {
+    public function testClear()
+    {
         $o = new UserDataObject('object', 'test', 1);
 
         $o->set(10, 'dix');
@@ -88,10 +91,10 @@ class UserDataObjectTest extends WP_UnitTestCase {
         $this->assertFalse($o->has(10));
         $this->assertNull($o->get(10));
         $this->assertSame($o->data(), []);
-
     }
 
-    public function testClearOnEmpty() {
+    public function testClearOnEmpty()
+    {
         $o = new UserDataObject('object', 'test', 1);
 
         $o->clear(15);
@@ -109,7 +112,8 @@ class UserDataObjectTest extends WP_UnitTestCase {
         $this->assertSame($o->data(), []);
     }
 
-    public function testLoadSave() {
+    public function testLoadSave()
+    {
         $o = new UserDataObject('object', 'test', 1);
 
         // enregistre un objet vide : le meta n'est pas créé

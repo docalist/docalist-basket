@@ -10,7 +10,6 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Biblio\UserData;
 
@@ -18,7 +17,8 @@ namespace Docalist\Biblio\UserData;
  * Extension pour Docalist Biblio : génère une image à la une par défaut pour
  * les notices qui ont un lien.
  */
-class Plugin {
+class Plugin
+{
     /**
      * Les paramètres du plugin.
      *
@@ -26,7 +26,8 @@ class Plugin {
      */
     protected $settings;
 
-    public function __construct() {
+    public function __construct()
+    {
         // Charge les fichiers de traduction du plugin
         load_plugin_textdomain('docalist-biblio-userdata', false, 'docalist-biblio-userdata/languages');
 
@@ -34,12 +35,12 @@ class Plugin {
         $this->settings = new Settings(docalist('settings-repository'));
 
         // Crée la page de réglages du plugin
-        add_action('admin_menu', function() {
+        add_action('admin_menu', function () {
             new SettingsPage($this->settings);
         });
 
         // Déclare le widget "Basket"
-        add_action('widgets_init', function() {
+        add_action('widgets_init', function () {
             register_widget('Docalist\Biblio\UserData\BasketWidget');
         });
 
@@ -49,7 +50,7 @@ class Plugin {
         }
 
         // Créée le service de gestion des données utilisateur
-        docalist('services')->add('user-data', function() {
+        docalist('services')->add('user-data', function () {
             return new UserData();
         });
 

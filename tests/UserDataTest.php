@@ -10,23 +10,22 @@
  * @package     Docalist
  * @subpackage  Tests\Biblio\UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Tests\Biblio\UserData;
 
 use WP_UnitTestCase;
-
 use Docalist\Biblio\UserData\UserData;
-use Docalist\Biblio\UserData\UserDataObject;
-use Docalist\Biblio\UserData\Basket;
 
-class UserDataTest extends WP_UnitTestCase {
-    public function setup() {
+class UserDataTest extends WP_UnitTestCase
+{
+    public function setup()
+    {
         wp_set_current_user(1);
         delete_user_meta(get_current_user_id(), 'docalist-object-test');
     }
 
-    public function testInstance() {
+    public function testInstance()
+    {
         $o = new UserData();
 
         $this->assertSame($o->baskets(), []);
@@ -35,7 +34,8 @@ class UserDataTest extends WP_UnitTestCase {
         $this->assertSame($b1, $o->basket('un'));
     }
 
-    public function testBaskets() {
+    public function testBaskets()
+    {
         $o = new UserData();
 
         $this->assertSame($o->baskets(), []);

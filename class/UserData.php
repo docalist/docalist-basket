@@ -10,25 +10,23 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
-
 namespace Docalist\Biblio\UserData;
 
 use WP_User;
 use InvalidArgumentException;
 
 /**
- * Gestionnaire de données utilisateurs (paniers, recherches enregistrées, etc.)
- *
+ * Gestionnaire de données utilisateurs (paniers, recherches enregistrées, etc.).
  */
-class UserData {
+class UserData
+{
     /**
-     * Map type d'objet => classe
+     * Map type d'objet => classe.
      *
      * @var array
      */
-    static protected $classmap = [
+    protected static $classmap = [
         'basket' => 'Docalist\Biblio\UserData\Basket',
     ];
 
@@ -49,7 +47,8 @@ class UserData {
      *
      * @throws InvalidArgumentException Si le type indiqué n'est pas géré.
      */
-    protected function className($type) {
+    protected function className($type)
+    {
         if (!isset(self::$classmap[$type])) {
             throw new InvalidArgumentException("Invalid user data type '$type'");
         }
@@ -68,7 +67,8 @@ class UserData {
      *
      * @return int L'ID de l'utilisateur s'il existe, 0 sinon.
      */
-    public function userID($user = null) {
+    public function userID($user = null)
+    {
         if (is_null($user)) {
             $user = wp_get_current_user();
         } elseif (is_int($user)) {
@@ -94,7 +94,8 @@ class UserData {
      * @return array Un tableau contenant le nom des objets (trié par ordre de
      * création).
      */
-    public function all($type, $user = null) {
+    public function all($type, $user = null)
+    {
         global $wpdb;
 
         // Vérifie que le type indiqué existe
@@ -122,7 +123,8 @@ class UserData {
      *
      * @return array
      */
-    public function baskets($user = null) {
+    public function baskets($user = null)
+    {
         return $this->all('basket', $user);
     }
 
@@ -135,7 +137,8 @@ class UserData {
      *
      * @return UserDataObject
      */
-    protected function get($type, $name, $user = null) {
+    protected function get($type, $name, $user = null)
+    {
         if (!isset($this->instances[$type]) || ! array_key_exists($name, $this->instances[$type])) {
             $user = $this->userID($user);
             if ($user === 0) {
@@ -165,7 +168,8 @@ class UserData {
      *
      * @return Basket
      */
-    public function basket($name = null, $user = null) {
+    public function basket($name = null, $user = null)
+    {
         // Si name est à null, détermine le nom du panier en cours
         if (is_null($name)) {
             // Sanity check
@@ -181,11 +185,12 @@ class UserData {
     }
 
     /**
-     * Retourne le nom du panier en cours de l'utilisateur
+     * Retourne le nom du panier en cours de l'utilisateur.
      *
      * @return string
      */
-    public function currentBasketName() {
+    public function currentBasketName()
+    {
         // Le panier par défaut s'appelle "1"
         $name = '1';
 
@@ -195,8 +200,8 @@ class UserData {
                 'options' => [
                     'min_range' => 1,
                     'max_range' => 10, // 10 paniers, c'est déjà pas mal, non ?
-                    'default'   => 1
-                ]
+                    'default' => 1,
+                ],
             ];
 
             $name = (string) filter_var($_COOKIE['basket'], FILTER_VALIDATE_INT, $options);

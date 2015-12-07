@@ -10,11 +10,10 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Biblio\UserData;
 
-add_action('init', function() {
+add_action('init', function () {
     $url = plugins_url('docalist-biblio-userdata/assets');
 
     wp_register_script(

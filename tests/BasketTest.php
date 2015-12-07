@@ -10,21 +10,22 @@
  * @package     Docalist
  * @subpackage  Tests\Biblio\UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Tests\Biblio\UserData;
 
 use WP_UnitTestCase;
-
 use Docalist\Biblio\UserData\Basket;
 
-class BasketTest extends WP_UnitTestCase {
-    public function setup() {
+class BasketTest extends WP_UnitTestCase
+{
+    public function setup()
+    {
         wp_set_current_user(1);
         delete_user_meta(get_current_user_id(), 'docalist-basket-test');
     }
 
-    public function testNew() {
+    public function testNew()
+    {
         $o = new Basket('test', 1);
 
         $this->assertSame($o->type(), 'basket');
@@ -32,7 +33,8 @@ class BasketTest extends WP_UnitTestCase {
         $this->assertSame($o->id(), 'docalist-basket-test');
     }
 
-    public function testAdd() {
+    public function testAdd()
+    {
         $o = new Basket('test', 1);
 
         $o->add(10);
@@ -52,7 +54,8 @@ class BasketTest extends WP_UnitTestCase {
         $this->assertTrue($o->isModified());
     }
 
-    public function testRemove() {
+    public function testRemove()
+    {
         $o = new Basket('test', 1);
 
         $o->remove(10);
@@ -65,7 +68,8 @@ class BasketTest extends WP_UnitTestCase {
         $this->assertSame($o->data(), [5, 25]);
     }
 
-    public function testSave() {
+    public function testSave()
+    {
         $o = new Basket('test', 1);
 
         $o->add([5, 15, 25])->save();

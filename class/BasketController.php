@@ -10,7 +10,6 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Biblio\UserData;
 
@@ -20,7 +19,8 @@ use Docalist\Http\JsonResponse;
 use WP_Query;
 use WP_Post;
 
-class BasketController extends Controller{
+class BasketController extends Controller
+{
     /**
      * Action par défaut du contrôleur.
      *
@@ -38,7 +38,7 @@ class BasketController extends Controller{
     ];
 
     /**
-     * Panier en cours
+     * Panier en cours.
      *
      * @var Basket
      */
@@ -54,14 +54,14 @@ class BasketController extends Controller{
     /**
      * Indique si on est sur la page du panier.
      *
-     * @var boolean
+     * @var bool
      */
     protected $isBasketPage = false;
 
     /**
      * Nombre de notices "baskettables" trouvées entre loop-start et loop-end
      * Utilisé pour déterminer s'il faut appeller enqueue_scripts.
-     * Mis à jour par addClass()
+     * Mis à jour par addClass().
      *
      * @var int
      */
@@ -72,24 +72,25 @@ class BasketController extends Controller{
      *
      * @param Settings $settings Paramètres du plugin.
      */
-    public function __construct(Settings $settings) {
+    public function __construct(Settings $settings)
+    {
         parent::__construct('docalist-biblio-basket', 'admin-ajax.php');
 
         $this->settings = $settings;
         $this->basket = docalist('user-data')->basket(); /* @var $basket Basket */
 
-        add_action('loop_start', function(WP_Query $query) {
+        add_action('loop_start', function (WP_Query $query) {
             if ($query->is_main_query()) {
                 $this->count = 0;
-                add_filter('post_class' , [$this, 'addClass' ], 10);
+                add_filter('post_class', [$this, 'addClass'], 10);
                 add_filter('the_excerpt', [$this, 'addToggle'], 99999);
                 add_filter('the_content', [$this, 'addToggle'], 99999);
             }
         });
 
-        add_action('loop_end', function(WP_Query $query) {
+        add_action('loop_end', function (WP_Query $query) {
             if ($query->is_main_query()) {
-                remove_filter('post_class' , [$this, 'addClass' ], 10);
+                remove_filter('post_class', [$this, 'addClass'], 10);
                 remove_filter('the_excerpt', [$this, 'addToggle'], 99999);
                 remove_filter('the_content', [$this, 'addToggle'], 99999);
                 if ($this->count) {
@@ -98,14 +99,14 @@ class BasketController extends Controller{
                     $settings = [
                         'active' => $this->settings->htmlActive(),
                         'inactive' => $this->settings->htmlInactive(),
-                        'url' => $this->baseUrl()
+                        'url' => $this->baseUrl(),
                     ];
                     wp_localize_script('docalist-biblio-userdata-basket', 'docalistBiblioUserdataBasketSettings', $settings);
                 }
             }
         });
 
-        add_filter('docalist_search_create_request', function(SearchRequest $request = null, WP_Query $query) {
+        add_filter('docalist_search_create_request', function (SearchRequest $request = null, WP_Query $query) {
             // Si on a une page spécifique pour le panier, teste si on est dessus
             if ($query->get_queried_object_id() === $this->settings->basketpage()) {
                 $this->isBasketPage = true;
@@ -125,7 +126,7 @@ class BasketController extends Controller{
 
                     // cf. https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-filter.html
                     $request->addHiddenFilter([
-                        'ids' => ['values' => $this->basket->data()]
+                        'ids' => ['values' => $this->basket->data()],
                     ]);
 
                     /*
@@ -152,9 +153,10 @@ class BasketController extends Controller{
     /**
      * Indique si on est sur la page du panier.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isBasketPage() {
+    public function isBasketPage()
+    {
         return $this->isBasketPage;
     }
 
@@ -163,7 +165,8 @@ class BasketController extends Controller{
      *
      * @return string
      */
-    public function basketPageUrl() {
+    public function basketPageUrl()
+    {
         if ($this->settings->basketpage()) {
             return get_the_permalink($this->settings->basketpage());
         }
@@ -176,9 +179,10 @@ class BasketController extends Controller{
      *
      * @param WP_Post $post
      *
-     * @return boolean
+     * @return bool
      */
-    public function isBasketable(WP_Post $post) {
+    public function isBasketable(WP_Post $post)
+    {
         static $databases = null;
 
         is_null($databases) && $databases = docalist('docalist-biblio')->databases();
@@ -194,7 +198,8 @@ class BasketController extends Controller{
      *
      * @return string
      */
-    public function addClass(array $classes) {
+    public function addClass(array $classes)
+    {
         global $post;
 
         if ($this->isBasketable($post)) {
@@ -215,7 +220,8 @@ class BasketController extends Controller{
      *
      * @return string
      */
-    public function addToggle($content) {
+    public function addToggle($content)
+    {
         global $post;
 
         if ($this->isBasketable($post)) {
@@ -226,9 +232,10 @@ class BasketController extends Controller{
         return $content;
     }
 
-    protected function register() {
+    protected function register()
+    {
         if ($this->canRun()) {
-            $callback = function() {
+            $callback = function () {
                 $this->run()->send();
                 exit();
             };
@@ -245,7 +252,8 @@ class BasketController extends Controller{
      *
      * @return int|int[]
      */
-    protected function refs($refs) {
+    protected function refs($refs)
+    {
         is_string($refs) && $refs = array_map('trim', explode(',', $refs));
 
         return $refs;
@@ -258,7 +266,8 @@ class BasketController extends Controller{
      *
      * @return JsonResponse
      */
-    public function actionAdd($refs) {
+    public function actionAdd($refs)
+    {
         $nb = $this->basket->count();
         $refs = $this->refs($refs);
         $this->basket->add($refs)->save();
@@ -266,9 +275,10 @@ class BasketController extends Controller{
         $nb = $count - $nb;
 
         $result = [];
-        foreach($refs as $ref) {
+        foreach ($refs as $ref) {
             $result[$ref] = $this->basket->has($ref);
         }
+
         return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $count, 'result' => $result]);
     }
 
@@ -279,7 +289,8 @@ class BasketController extends Controller{
      *
      * @return JsonResponse
      */
-    public function actionRemove($refs) {
+    public function actionRemove($refs)
+    {
         $nb = $this->basket->count();
         $refs = $this->refs($refs);
         $this->basket->remove($refs)->save();
@@ -287,9 +298,10 @@ class BasketController extends Controller{
         $nb -= $count;
 
         $result = [];
-        foreach($refs as $ref) {
+        foreach ($refs as $ref) {
             $result[$ref] = $this->basket->has($ref);
         }
+
         return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $count, 'result' => $result]);
     }
 
@@ -298,7 +310,8 @@ class BasketController extends Controller{
      *
      * @return JsonResponse
      */
-    public function actionClear() {
+    public function actionClear()
+    {
         $nb = $this->basket->count();
         $this->basket->clear()->save();
 
@@ -310,7 +323,8 @@ class BasketController extends Controller{
      *
      * @return JsonResponse
      */
-    public function actionDump() {
+    public function actionDump()
+    {
         return $this->json(['action' => $this->action(), 'count' => $this->basket->count(), 'refs' => $this->basket->data()]);
     }
 }

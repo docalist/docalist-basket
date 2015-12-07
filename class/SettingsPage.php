@@ -10,7 +10,6 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Biblio\UserData;
 
@@ -19,7 +18,8 @@ use Docalist\AdminPage;
 /**
  * Options de configuration du plugin.
  */
-class SettingsPage extends AdminPage {
+class SettingsPage extends AdminPage
+{
     /**
      * Action par défaut du contrôleur.
      *
@@ -39,7 +39,8 @@ class SettingsPage extends AdminPage {
      *
      * @param Settings $settings Paramètres du plugin.
      */
-    public function __construct(Settings $settings) {
+    public function __construct(Settings $settings)
+    {
         $this->settings = $settings;
 
         parent::__construct(
@@ -66,7 +67,8 @@ class SettingsPage extends AdminPage {
     /**
      * Paramètres du panier.
      */
-    public function actionBasketSettings() {
+    public function actionBasketSettings()
+    {
         if ($this->isPost()) {
             try {
                 $_POST = wp_unslash($_POST);
@@ -89,7 +91,7 @@ class SettingsPage extends AdminPage {
         }
 
         return $this->view('docalist-biblio-userdata:settings/basket', [
-            'settings' => $this->settings
+            'settings' => $this->settings,
         ]);
     }
 }

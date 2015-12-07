@@ -10,7 +10,6 @@
  * @package     Docalist
  * @subpackage  Tests\Biblio\UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 // Environnement de test
 $GLOBALS['wp_tests_options'] = [
