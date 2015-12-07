@@ -10,7 +10,7 @@
  * Plugin Name: Docalist Biblio User Data
  * Plugin URI:  http://docalist.org/
  * Description: Basket and search history for Docalist-Biblio.
- * Version:     0.1
+ * Version:     0.2.0
  * Author:      Daniel Ménard
  * Author URI:  http://docalist.org/
  * Text Domain: docalist-biblio-userdata
@@ -19,28 +19,21 @@
  * @package     Docalist\Biblio
  * @subpackage  UserData
  * @author      Daniel Ménard <daniel.menard@laposte.net>
- * @version     SVN: $Id$
  */
 namespace Docalist\Biblio\UserData;
 
 // Définit une constante pour indiquer que ce plugin est activé
-define('DOCALIST_BIBLIO_USERDATA', __FILE__);
+define('DOCALIST_BIBLIO_USERDATA', __DIR__);
 
-/**
+/*
  * Initialise le plugin.
 */
 add_action('plugins_loaded', function () {
-    // Seuls les utilisateurs auhentifiés peuvent avoir des données
-    // Si ce n'est pas le cas, inutile de charger le plugin
-//     if (! is_user_logged_in()) {
-//         return;
-//     }
-
     // Auto désactivation si les plugins dont on a besoin ne sont pas activés
     $dependencies = ['DOCALIST_CORE', 'DOCALIST_BIBLIO'];
-    foreach($dependencies as $dependency) {
+    foreach ($dependencies as $dependency) {
         if (! defined($dependency)) {
-            return add_action('admin_notices', function() use ($dependency) {
+            return add_action('admin_notices', function () use ($dependency) {
                 deactivate_plugins(plugin_basename(__FILE__));
                 unset($_GET['activate']); // empêche wp d'afficher "extension activée"
                 $dependency = ucwords(strtolower(strtr($dependency, '_', ' ')));
