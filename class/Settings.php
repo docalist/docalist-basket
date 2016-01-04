@@ -30,7 +30,7 @@ class Settings extends TypeSettings
 {
     protected $id = 'docalist-biblio-userdata';
 
-    protected static function loadSchema()
+    static public function loadSchema()
     {
         return [
             'fields' => [
