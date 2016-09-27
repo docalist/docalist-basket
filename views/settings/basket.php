@@ -57,7 +57,7 @@ use Docalist\Forms\Form;
 function pagesList()
 {
     $pages = ['…'];
-    foreach (get_pages() as $page) { /* @var $page \WP_Post */
+    foreach (get_pages() as $page) { /** @var \WP_Post $page */
         $pages[$page->ID] = str_repeat('   ', count($page->ancestors)) . $page->post_title;
     }
 

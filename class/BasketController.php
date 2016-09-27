@@ -77,7 +77,7 @@ class BasketController extends Controller
         parent::__construct('docalist-biblio-basket', 'admin-ajax.php');
 
         $this->settings = $settings;
-        $this->basket = docalist('user-data')->basket(); /* @var $basket Basket */
+        $this->basket = docalist('user-data')->basket(); /** @var Basket $basket */
 
         add_action('loop_start', function (WP_Query $query) {
             if ($query->is_main_query()) {
