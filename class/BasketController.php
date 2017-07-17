@@ -14,7 +14,7 @@
 namespace Docalist\Biblio\UserData;
 
 use Docalist\Controller;
-use Docalist\Search\SearchRequest2 as SearchRequest;
+use Docalist\Search\SearchRequest;
 use Docalist\Http\JsonResponse;
 use WP_Query;
 use WP_Post;
