@@ -2,7 +2,7 @@
 /**
  * This file is part of the "Docalist Biblio UserData" plugin.
  *
- * Copyright (C) 2015-2015 Daniel Ménard
+ * Copyright (C) 2015-2017 Daniel Ménard
  *
  * For copyright and license information, please view the
  * LICENSE.txt file that was distributed with this source code.
@@ -14,10 +14,11 @@
 namespace Docalist\Biblio\UserData;
 
 use Docalist\Controller;
-use Docalist\Search\SearchRequest;
+use Docalist\Search\SearchRequest2 as SearchRequest;
 use Docalist\Http\JsonResponse;
 use WP_Query;
 use WP_Post;
+use Docalist\Search\SearchUrl;
 
 class BasketController extends Controller
 {
@@ -106,26 +107,28 @@ class BasketController extends Controller
             }
         });
 
-        add_filter('docalist_search_create_request', function (SearchRequest $request = null, WP_Query $query) {
+            add_filter('docalist_search_create_request', function (SearchRequest $request = null, WP_Query $query, & $display = true) {
             // Si on a une page spécifique pour le panier, teste si on est dessus
             if ($query->get_queried_object_id() === $this->settings->basketpage()) {
                 $this->isBasketPage = true;
             }
 
             // Pas de page "panier", le panier est une recherche avec "?_basket"
-            elseif (isset($request) && $request->isSearch() && isset($_REQUEST['_basket'])) {
+            elseif (isset($request) && isset($_REQUEST['_basket'])) {
                 $this->isBasketPage = true;
             }
 
             if ($this->isBasketPage) {
                 if (! $this->basket->isEmpty()) {
+                    $url = new SearchUrl($_SERVER['REQUEST_URI']);
                     if (is_null($request)) {
-                        $request = docalist('docalist-search-engine')->defaultRequest();
+                        $request = $url->getSearchRequest();
+                    } else {
+                        $request->setSearchUrl($url);
                     }
-                    $request->searchPageUrl($this->basketPageUrl());
 
                     // cf. https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-filter.html
-                    $request->addHiddenFilter([
+                    $request->addGlobalFilter([
                         'ids' => ['values' => $this->basket->data()],
                     ]);
 
@@ -141,7 +144,7 @@ class BasketController extends Controller
                      */
 
                     // Indique à docalist-search qu'on veut afficher les réponses
-                    $request->isSearch(true);
+                    $display = true;
                 }
                 // else : le panier est vide, laisse wp afficher la page panier
             }
