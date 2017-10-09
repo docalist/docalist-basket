@@ -2,7 +2,7 @@
 /**
  * This file is part of the "Docalist Biblio UserData" plugin.
  *
- * Copyright (C) 2015-2015 Daniel Ménard
+ * Copyright (C) 2015-2017 Daniel Ménard
  *
  * For copyright and license information, please view the
  * LICENSE.txt file that was distributed with this source code.
@@ -22,12 +22,35 @@
  */
 namespace Docalist\Biblio\UserData;
 
-// Définit une constante pour indiquer que ce plugin est activé
-define('DOCALIST_BIBLIO_USERDATA', __DIR__);
+/**
+ * Version du plugin.
+ */
+define('DOCALIST_BIBLIO_USERDATA_VERSION', '0.2.0'); // Garder synchro avec la version indiquée dans l'entête
 
-/*
+/**
+ * Path absolu du répertoire dans lequel le plugin est installé.
+ *
+ * Par défaut, on utilise la constante magique __DIR__ qui retourne le path réel du répertoire et résoud les liens
+ * symboliques.
+ *
+ * Si le répertoire du plugin est un lien symbolique, la constante doit être définie manuellement dans le fichier
+ * wp_config.php et pointer sur le lien symbolique et non sur le répertoire réel.
+ */
+!defined('DOCALIST_BIBLIO_USERDATA_DIR') && define('DOCALIST_BIBLIO_USERDATA_DIR', __DIR__);
+
+/**
+ * Path absolu du fichier principal du plugin.
+ */
+define('DOCALIST_BIBLIO_USERDATA', DOCALIST_BIBLIO_USERDATA_DIR . DIRECTORY_SEPARATOR . basename(__FILE__));
+
+/**
+ * Url de base du plugin.
+ */
+define('DOCALIST_BIBLIO_USERDATA_URL', plugins_url('', DOCALIST_BIBLIO_USERDATA));
+
+/**
  * Initialise le plugin.
-*/
+ */
 add_action('plugins_loaded', function () {
     // Auto désactivation si les plugins dont on a besoin ne sont pas activés
     $dependencies = ['DOCALIST_CORE', 'DOCALIST_BIBLIO'];
