@@ -2,7 +2,7 @@
 /**
  * This file is part of the "Docalist Biblio UserData" plugin.
  *
- * Copyright (C) 2015-2015 Daniel Ménard
+ * Copyright (C) 2015-2017 Daniel Ménard
  *
  * For copyright and license information, please view the
  * LICENSE.txt file that was distributed with this source code.
@@ -12,6 +12,8 @@
  * @author      Daniel Ménard <daniel.menard@laposte.net>
  */
 namespace Docalist\Biblio\UserData;
+
+use Docalist\Views;
 
 /**
  * Extension pour Docalist Biblio : génère une image à la une par défaut pour
@@ -30,6 +32,11 @@ class Plugin
     {
         // Charge les fichiers de traduction du plugin
         load_plugin_textdomain('docalist-biblio-userdata', false, 'docalist-biblio-userdata/languages');
+
+        // Ajoute notre répertoire "views" au service "docalist-views"
+        add_filter('docalist_service_views', function(Views $views) {
+            return $views->addDirectory('docalist-biblio-userdata', DOCALIST_BIBLIO_USERDATA_DIR . '/views');
+        });
 
         // Charge la configuration du plugin
         $this->settings = new Settings(docalist('settings-repository'));
