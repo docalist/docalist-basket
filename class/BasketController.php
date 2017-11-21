@@ -128,9 +128,7 @@ class BasketController extends Controller
                     }
 
                     // cf. https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-ids-filter.html
-                    $request->addGlobalFilter([
-                        'ids' => ['values' => $this->basket->data()],
-                    ]);
+                    $request->addFilter(['ids' => ['values' => $this->basket->data()]], 'hidden-filter');
 
                     /*
                      * Remarque : la requête génèrée n'est pas optimale car on
