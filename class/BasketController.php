@@ -23,13 +23,6 @@ use Docalist\Search\SearchUrl;
 class BasketController extends Controller
 {
     /**
-     * Action par défaut du contrôleur.
-     *
-     * @var string
-     */
-    protected $defaultAction = 'Dump';
-
-    /**
      * Définit les droits requis pour exécuter les actions de ce contrôleur.
      *
      * Le tableau est de la forme "nom de l'action" => "capacité requise".
@@ -107,9 +100,10 @@ class BasketController extends Controller
             }
         });
 
-            add_filter('docalist_search_create_request', function (SearchRequest $request = null, WP_Query $query, & $display = true) {
+        add_filter('docalist_search_create_request', function (SearchRequest $request = null, WP_Query $query, & $display = true) {
             // Si on a une page spécifique pour le panier, teste si on est dessus
-            if ($query->get_queried_object_id() === $this->settings->basketpage()) {
+            $basketPage = $this->settings->basketpage();
+            if ($basketPage && $query->get_queried_object_id() === $basketPage) {
                 $this->isBasketPage = true;
             }
 
@@ -142,13 +136,18 @@ class BasketController extends Controller
                      */
 
                     // Indique à docalist-search qu'on veut afficher les réponses
-                    $display = true;
+                    $display = false;
                 }
                 // else : le panier est vide, laisse wp afficher la page panier
             }
 
             return $request;
         }, 100, 2);
+    }
+
+    protected function getDefaultAction()
+    {
+        return 'Dump';
     }
 
     /**
@@ -172,7 +171,7 @@ class BasketController extends Controller
             return get_the_permalink($this->settings->basketpage());
         }
 
-        return get_permalink(docalist('docalist-search-engine')->searchPage());
+        return get_permalink(docalist('docalist-search-engine')->searchPage()) . '?_basket';
     }
 
     /**
@@ -240,8 +239,8 @@ class BasketController extends Controller
                 $this->run()->send();
                 exit();
             };
-            add_action('wp_ajax_' . $this->id(), $callback);
-            add_action('wp_ajax_nopriv_' . $this->id(), $callback);
+            add_action('wp_ajax_' . $this->getID(), $callback);
+            add_action('wp_ajax_nopriv_' . $this->getID(), $callback);
         }
     }
 
@@ -280,7 +279,7 @@ class BasketController extends Controller
             $result[$ref] = $this->basket->has($ref);
         }
 
-        return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $count, 'result' => $result]);
+        return $this->json(['action' => $this->getAction(), 'nb' => $nb, 'count' => $count, 'result' => $result]);
     }
 
     /**
@@ -303,7 +302,7 @@ class BasketController extends Controller
             $result[$ref] = $this->basket->has($ref);
         }
 
-        return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $count, 'result' => $result]);
+        return $this->json(['action' => $this->getAction(), 'nb' => $nb, 'count' => $count, 'result' => $result]);
     }
 
     /**
@@ -316,7 +315,7 @@ class BasketController extends Controller
         $nb = $this->basket->count();
         $this->basket->clear()->save();
 
-        return $this->json(['action' => $this->action(), 'nb' => $nb, 'count' => $this->basket->count()]);
+        return $this->json(['action' => $this->getAction(), 'nb' => $nb, 'count' => $this->basket->count()]);
     }
 
     /**
@@ -326,6 +325,6 @@ class BasketController extends Controller
      */
     public function actionDump()
     {
-        return $this->json(['action' => $this->action(), 'count' => $this->basket->count(), 'refs' => $this->basket->data()]);
+        return $this->json(['action' => $this->getAction(), 'count' => $this->basket->count(), 'refs' => $this->basket->data()]);
     }
 }
