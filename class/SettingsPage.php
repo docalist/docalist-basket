@@ -21,13 +21,6 @@ use Docalist\AdminPage;
 class SettingsPage extends AdminPage
 {
     /**
-     * Action par défaut du contrôleur.
-     *
-     * @var string
-     */
-    protected $defaultAction = 'BasketSettings';
-
-    /**
      * Paramètres du plugin.
      *
      * @var Settings
@@ -64,6 +57,11 @@ class SettingsPage extends AdminPage
         });
     }
 
+    protected function getDefaultAction()
+    {
+        return 'BasketSettings';
+    }
+
     /**
      * Paramètres du panier.
      */
@@ -84,7 +82,7 @@ class SettingsPage extends AdminPage
                     __('Options enregistrées.', 'docalist-biblio-userdata')
                 );
 
-                return $this->redirect($this->url($this->defaultAction()), 303);
+                return $this->redirect($this->url($this->getDefaultAction()), 303);
             } catch (Exception $e) {
                 docalist('admin-notices')->error($e->getMessage());
             }
