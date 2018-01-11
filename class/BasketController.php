@@ -185,7 +185,7 @@ class BasketController extends Controller
     {
         static $databases = null;
 
-        is_null($databases) && $databases = docalist('docalist-biblio')->databases();
+        is_null($databases) && $databases = docalist('docalist-data')->databases();
 
         return isset($databases[$post->post_type]);
     }
