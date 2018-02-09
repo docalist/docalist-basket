@@ -47,7 +47,7 @@ class SettingsPage extends AdminPage
         add_filter($filter, function ($actions) {
             $action = sprintf(
                     '<a href="%s" title="%s">%s</a>',
-                    esc_attr($this->url()),
+                    esc_attr($this->getUrl()),
                     $this->menuTitle(),
                     __('Réglages', 'docalist-biblio-userdata')
             );
@@ -82,7 +82,7 @@ class SettingsPage extends AdminPage
                     __('Options enregistrées.', 'docalist-biblio-userdata')
                 );
 
-                return $this->redirect($this->url($this->getDefaultAction()), 303);
+                return $this->redirect($this->getUrl($this->getDefaultAction()), 303);
             } catch (Exception $e) {
                 docalist('admin-notices')->error($e->getMessage());
             }
