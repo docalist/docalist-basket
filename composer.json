@@ -1,13 +1,13 @@
 {
 	"type": "wordpress-plugin",
-	"name": "docalist/docalist-biblio-userdata",
+	"name": "docalist/docalist-userdata",
 	"description": "Docalist-Biblio UserData: Basket and search history for Docalist-Biblio.",
     "homepage": "http://docalist.org/",
 	"license": "GPL-2.0",
 
 	"authors": [ 
         {
-            "name": "Daniel MÃ©nard",
+            "name": "Daniel Ménard",
             "email": "daniel.menard@laposte.net",
             "homepage": "http://docalist.org/"
         }
