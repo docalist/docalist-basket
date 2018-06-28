@@ -1,17 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file is part of the "Docalist Biblio UserData" plugin.
+ * This file is part of Docalist UserData.
  *
- * Copyright (C) 2015-2015 Daniel Ménard
+ * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
- * LICENSE.txt file that was distributed with this source code.
+ * LICENSE file that was distributed with this source code.
  *
- * @package     Docalist\Biblio
- * @subpackage  UserData
- * @author      Daniel Ménard <daniel.menard@laposte.net>
+ * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\Biblio\UserData;
+namespace Docalist\UserData;
 
 use Docalist\AdminPage;
 
@@ -37,23 +35,21 @@ class SettingsPage extends AdminPage
         $this->settings = $settings;
 
         parent::__construct(
-            'docalist-biblio-userdata-settings',                // ID
-            'options-general.php',                              // page parent
-            __('Panier de notices', 'docalist-biblio-userdata') // libellé menu
+            'docalist-userdata-settings',               // ID
+            'options-general.php',                      // page parent
+            __('Panier Docalist', 'docalist-userdata')  // libellé menu
         );
 
         // Ajoute un lien "Réglages" dans la page des plugins
-        $filter = 'plugin_action_links_docalist-biblio-userdata/docalist-biblio-userdata.php';
+        $filter = 'plugin_action_links_docalist-userdata/docalist-userdata.php';
         add_filter($filter, function ($actions) {
-            $action = sprintf(
-                    '<a href="%s" title="%s">%s</a>',
+            return [
+                'settings' => sprintf(
+                    '<a href="%s">%s</a>',
                     esc_attr($this->getUrl()),
-                    $this->menuTitle(),
-                    __('Réglages', 'docalist-biblio-userdata')
-            );
-            array_unshift($actions, $action);
-
-            return $actions;
+                    __('Réglages', 'docalist-userdata')
+                )
+            ] + $actions;
         });
     }
 
@@ -79,7 +75,7 @@ class SettingsPage extends AdminPage
                 $this->settings->save();
 
                 docalist('admin-notices')->success(
-                    __('Options enregistrées.', 'docalist-biblio-userdata')
+                    __('Options enregistrées.', 'docalist-userdata')
                 );
 
                 return $this->redirect($this->getUrl($this->getDefaultAction()), 303);
@@ -88,7 +84,7 @@ class SettingsPage extends AdminPage
             }
         }
 
-        return $this->view('docalist-biblio-userdata:settings/basket', [
+        return $this->view('docalist-userdata:settings/basket', [
             'settings' => $this->settings,
         ]);
     }

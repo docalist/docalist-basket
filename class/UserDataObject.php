@@ -1,17 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file is part of the "Docalist Biblio UserData" plugin.
+ * This file is part of Docalist UserData.
  *
- * Copyright (C) 2015-2015 Daniel Ménard
+ * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
- * LICENSE.txt file that was distributed with this source code.
+ * LICENSE file that was distributed with this source code.
  *
- * @package     Docalist\Biblio
- * @subpackage  UserData
- * @author      Daniel Ménard <daniel.menard@laposte.net>
+ * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\Biblio\UserData;
+namespace Docalist\UserData;
 
 use Countable;
 use Exception;
@@ -291,8 +289,7 @@ class UserDataObject implements Countable
 
             // Enregistre le meta
             if (false === update_user_meta($this->user, $this->id, $data)) {
-                $msg = __('Unable to save user data %s', 'docalist-biblio');
-                throw new Exception(sprintf($msg, $this->id));
+                throw new Exception(sprintf('Unable to save user data %s', $this->id));
             }
         }
 
@@ -314,8 +311,11 @@ class UserDataObject implements Countable
 
         // On doit obtenir un tableau (éventuellement vide), sinon erreur
         if (! is_array($data)) {
-            $msg = __('JSON error while decoding user data %s: error %s', 'docalist-biblio');
-            throw new Exception(sprintf($msg, $this->id, json_last_error()));
+            throw new Exception(sprintf(
+                'JSON error while decoding user data %s: error %s',
+                $this->id,
+                json_last_error()
+            ));
         }
 
         // Ok

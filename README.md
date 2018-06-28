@@ -1,3 +1,3 @@
-# docalist-biblio-userdata
+# docalist-userdata
 
-Docalist-Biblio UserData: Basket and search history for Docalist-Biblio.
+Docalist : données utilisateurs.

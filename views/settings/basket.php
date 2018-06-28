@@ -1,20 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file is part of the "Docalist Biblio UserData" plugin.
+ * This file is part of Docalist UserData.
  *
- * Copyright (C) 2015-2015 Daniel Ménard
+ * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
- * LICENSE.txt file that was distributed with this source code.
+ * LICENSE file that was distributed with this source code.
  *
- * @package     Docalist\Biblio
- * @subpackage  UserData
- * @author      Daniel Ménard <daniel.menard@laposte.net>
+ * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\Biblio\UserData\Views;
+namespace Docalist\UserData\Views;
 
-use Docalist\Biblio\UserData\SettingsPage;
-use Docalist\Biblio\UserData\Settings;
+use Docalist\UserData\SettingsPage;
+use Docalist\UserData\Settings;
 use Docalist\Forms\Form;
 
 /**
@@ -25,12 +23,12 @@ use Docalist\Forms\Form;
  */
 ?>
 <div class="wrap">
-    <h1><?= __('Paramètres du panier', 'docalist-biblio-userdata') ?></h1>
+    <h1><?= __('Panier Docalist', 'docalist-userdata') ?></h1>
 
     <p class="description"><?php
         echo __(
-            'Le panier vous permet de sélectionner les notices qui vous intéressent puis de les exploiter.',
-            'docalist-biblio-userdata'
+            'Le panier Docalist vous permet de sélectionner les documents qui vous intéressent.',
+            'docalist-userdata'
         );
     ?></p>
 
@@ -40,7 +38,7 @@ use Docalist\Forms\Form;
         $form->input('htmlInactive')->addClass('large-text code');
         $form->input('htmlActive')->addClass('large-text code');
         $form->checkbox('linksBeforeContent');
-        $form->submit(__('Enregistrer les modifications', 'docalist-biblio-userdata'))
+        $form->submit(__('Enregistrer les modifications', 'docalist-userdata'))
              ->addClass('button button-primary');
 
         $form->bind($settings)->display();

@@ -1,24 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file is part of the "Docalist Biblio UserData" plugin.
+ * This file is part of Docalist UserData.
  *
- * Copyright (C) 2015-2017 Daniel Ménard
+ * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
- * LICENSE.txt file that was distributed with this source code.
+ * LICENSE file that was distributed with this source code.
  *
- * @package     Docalist\Biblio
- * @subpackage  UserData
- * @author      Daniel Ménard <daniel.menard@laposte.net>
+ * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\Biblio\UserData;
+namespace Docalist\UserData;
 
 use Docalist\Views;
 
-/**
- * Extension pour Docalist Biblio : génère une image à la une par défaut pour
- * les notices qui ont un lien.
- */
 class Plugin
 {
     /**
@@ -31,11 +25,11 @@ class Plugin
     public function __construct()
     {
         // Charge les fichiers de traduction du plugin
-        load_plugin_textdomain('docalist-biblio-userdata', false, 'docalist-biblio-userdata/languages');
+        load_plugin_textdomain('docalist-userdata', false, 'docalist-userdata/languages');
 
         // Ajoute notre répertoire "views" au service "docalist-views"
         add_filter('docalist_service_views', function(Views $views) {
-            return $views->addDirectory('docalist-biblio-userdata', DOCALIST_BIBLIO_USERDATA_DIR . '/views');
+            return $views->addDirectory('docalist-userdata', DOCALIST_USERDATA_DIR . '/views');
         });
 
         // Charge la configuration du plugin
@@ -48,7 +42,7 @@ class Plugin
 
         // Déclare le widget "Basket"
         add_action('widgets_init', function () {
-            register_widget('Docalist\Biblio\UserData\BasketWidget');
+            register_widget('Docalist\UserData\BasketWidget');
         });
 
         // Si l'utilisateur en cours n'est pas connecté, aucun service n'est créé

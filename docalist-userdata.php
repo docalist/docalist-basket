@@ -1,31 +1,29 @@
 <?php
 /**
- * This file is part of the "Docalist Biblio UserData" plugin.
+ * This file is part of Docalist UserData.
  *
- * Copyright (C) 2015-2017 Daniel Ménard
+ * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
- * LICENSE.txt file that was distributed with this source code.
+ * LICENSE file that was distributed with this source code.
  *
- * Plugin Name: Docalist Biblio User Data
- * Plugin URI:  http://docalist.org/
- * Description: Basket and search history for Docalist-Biblio.
- * Version:     0.2.0
+ * Plugin Name: Docalist User Data
+ * Plugin URI:  https://docalist.org/
+ * Description: Docalist : données utilisateurs.
+ * Version:     0.3.0
  * Author:      Daniel Ménard
- * Author URI:  http://docalist.org/
- * Text Domain: docalist-biblio-userdata
+ * Author URI:  https://docalist.org/
+ * Text Domain: docalist-userdata
  * Domain Path: /languages
  *
- * @package     Docalist\Biblio
- * @subpackage  UserData
- * @author      Daniel Ménard <daniel.menard@laposte.net>
+ * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\Biblio\UserData;
+namespace Docalist\UserData;
 
 /**
  * Version du plugin.
  */
-define('DOCALIST_BIBLIO_USERDATA_VERSION', '0.2.0'); // Garder synchro avec la version indiquée dans l'entête
+define('DOCALIST_USERDATA_VERSION', '0.3.0'); // Garder synchro avec la version indiquée dans l'entête
 
 /**
  * Path absolu du répertoire dans lequel le plugin est installé.
@@ -36,37 +34,40 @@ define('DOCALIST_BIBLIO_USERDATA_VERSION', '0.2.0'); // Garder synchro avec la v
  * Si le répertoire du plugin est un lien symbolique, la constante doit être définie manuellement dans le fichier
  * wp_config.php et pointer sur le lien symbolique et non sur le répertoire réel.
  */
-!defined('DOCALIST_BIBLIO_USERDATA_DIR') && define('DOCALIST_BIBLIO_USERDATA_DIR', __DIR__);
+!defined('DOCALIST_USERDATA_DIR') && define('DOCALIST_USERDATA_DIR', __DIR__);
 
 /**
  * Path absolu du fichier principal du plugin.
  */
-define('DOCALIST_BIBLIO_USERDATA', DOCALIST_BIBLIO_USERDATA_DIR . DIRECTORY_SEPARATOR . basename(__FILE__));
+define('DOCALIST_USERDATA', DOCALIST_USERDATA_DIR . DIRECTORY_SEPARATOR . basename(__FILE__));
 
 /**
  * Url de base du plugin.
  */
-define('DOCALIST_BIBLIO_USERDATA_URL', plugins_url('', DOCALIST_BIBLIO_USERDATA));
+define('DOCALIST_USERDATA_URL', plugins_url('', DOCALIST_USERDATA));
 
 /**
  * Initialise le plugin.
  */
 add_action('plugins_loaded', function () {
     // Auto désactivation si les plugins dont on a besoin ne sont pas activés
-    $dependencies = ['DOCALIST_CORE', 'DOCALIST_BIBLIO'];
+    $dependencies = ['DOCALIST_CORE', 'DOCALIST_DATA'];
     foreach ($dependencies as $dependency) {
         if (! defined($dependency)) {
             return add_action('admin_notices', function () use ($dependency) {
-                deactivate_plugins(plugin_basename(__FILE__));
+                deactivate_plugins(DOCALIST_USERDATA);
                 unset($_GET['activate']); // empêche wp d'afficher "extension activée"
-                $dependency = ucwords(strtolower(strtr($dependency, '_', ' ')));
-                $plugin = get_plugin_data(__FILE__, true, false)['Name'];
-                echo "<div class='error'><p><b>$plugin</b> has been deactivated because it requires <b>$dependency</b>.</p></div>";
+                printf(
+                    '<div class="%s"><p><b>%s</b> has been deactivated because it requires <b>%s</b>.</p></div>',
+                    'notice notice-error is-dismissible',
+                    'Docalist Databases',
+                    ucwords(strtolower(strtr($dependency, '_', ' ')))
+                );
             });
         }
     }
 
     // Ok
     docalist('autoloader')->add(__NAMESPACE__, __DIR__ . '/class');
-    docalist('services')->add('docalist-biblio-userdata', new Plugin());
+    docalist('services')->add('docalist-userdata', new Plugin());
 });

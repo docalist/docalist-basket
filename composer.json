@@ -1,7 +1,7 @@
 {
 	"type": "wordpress-plugin",
 	"name": "docalist/docalist-userdata",
-	"description": "Docalist-Biblio UserData: Basket and search history for Docalist-Biblio.",
+	"description": "Docalist : données utilisateurs.",
     "homepage": "http://docalist.org/",
 	"license": "GPL-2.0",
 

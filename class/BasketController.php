@@ -1,17 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file is part of the "Docalist Biblio UserData" plugin.
+ * This file is part of Docalist UserData.
  *
- * Copyright (C) 2015-2017 Daniel Ménard
+ * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
- * LICENSE.txt file that was distributed with this source code.
+ * LICENSE file that was distributed with this source code.
  *
- * @package     Docalist\Biblio
- * @subpackage  UserData
- * @author      Daniel Ménard <daniel.menard@laposte.net>
+ * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\Biblio\UserData;
+namespace Docalist\UserData;
 
 use Docalist\Controller;
 use Docalist\Search\SearchRequest;
@@ -68,7 +66,7 @@ class BasketController extends Controller
      */
     public function __construct(Settings $settings)
     {
-        parent::__construct('docalist-biblio-basket', 'admin-ajax.php');
+        parent::__construct('docalist-userdata-basket', 'admin-ajax.php');
 
         $this->settings = $settings;
         $this->basket = docalist('user-data')->basket(); /** @var Basket $basket */
@@ -88,14 +86,14 @@ class BasketController extends Controller
                 remove_filter('the_excerpt', [$this, 'addToggle'], 99999);
                 remove_filter('the_content', [$this, 'addToggle'], 99999);
                 if ($this->count) {
-                    wp_enqueue_style('docalist-biblio-userdata-basket'); // debug only
-                    wp_enqueue_script('docalist-biblio-userdata-basket');
+                    wp_enqueue_style('docalist-userdata-basket'); // debug only
+                    wp_enqueue_script('docalist-userdata-basket');
                     $settings = [
                         'active' => $this->settings->htmlActive(),
                         'inactive' => $this->settings->htmlInactive(),
                         'url' => $this->baseUrl(),
                     ];
-                    wp_localize_script('docalist-biblio-userdata-basket', 'docalistBiblioUserdataBasketSettings', $settings);
+                    wp_localize_script('docalist-userdata-basket', 'docalistUserdataBasketSettings', $settings);
                 }
             }
         });

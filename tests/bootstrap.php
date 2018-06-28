@@ -1,23 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file is part of the "Docalist Biblio UserData" plugin.
+ * This file is part of Docalist UserData.
  *
- * Copyright (C) 2015-2015 Daniel Ménard
+ * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
- * LICENSE.txt file that was distributed with this source code.
+ * LICENSE file that was distributed with this source code.
  *
- * @package     Docalist
- * @subpackage  Tests\Biblio\UserData
- * @author      Daniel Ménard <daniel.menard@laposte.net>
+ * @author Daniel Ménard <daniel.menard@laposte.net>
  */
+namespace Docalist\Tests\UserData;
+
 // Environnement de test
 $GLOBALS['wp_tests_options'] = [
     'active_plugins' => [
         'docalist-core/docalist-core.php',
         'docalist-search/docalist-search.php',
-        'docalist-biblio/docalist-biblio.php',
-        'docalist-biblio-userdata/docalist-biblio-userdata.php',
+        'docalist-data/docalist-data.php',
+        'docalist-userdata/docalist-userdata.php',
     ],
 ];
 
