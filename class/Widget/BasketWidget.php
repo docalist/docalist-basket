@@ -1,34 +1,37 @@
 <?php declare(strict_types=1);
 /**
- * This file is part of Docalist UserData.
+ * This file is part of Docalist Basket.
  *
  * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
- *
- * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\UserData;
+namespace Docalist\Basket\Widget;
 
 use WP_Widget;
 use Docalist\Forms\Container;
 
+/**
+ * Widget panier docalist.
+ *
+ * @author Daniel Ménard <daniel.menard@laposte.net>
+ */
 class BasketWidget extends WP_Widget
 {
     public function __construct()
     {
-        $id = 'docalist-userdata-basket';
+        $id = 'docalist-basket';
         parent::__construct(
             // Base ID. Inutile de préfixer avec "widget", WordPress le fait
             $id,
 
             // Titre (nom) du widget affiché en back office
-            __('Panier Docalist', 'docalist-userdata'),
+            __('Panier Docalist', 'docalist-basket'),
 
             // Args
             [
-                'description' => __('Panier Docalist', 'docalist-userdata'),
+                'description' => __('Panier Docalist', 'docalist-basket'),
                 'classname' => $id, // par défaut, WordPress met 'widget_'.$id
             ]
         );
@@ -92,7 +95,7 @@ class BasketWidget extends WP_Widget
         $label && printf($link,
             'basket-show',
             ($count && !$isBasketPage) ? '' : 'display:none',
-            __('Affiche les notices sélectionnées.', 'docalist-userdata'),
+            __('Affiche les notices sélectionnées.', 'docalist-basket'),
             esc_url(docalist('basket-controller')->basketPageUrl()),
             $label
         );
@@ -102,7 +105,7 @@ class BasketWidget extends WP_Widget
         $label && printf($link,
             'basket-addpage',
             'display:none',
-            __('Ajoute à la sélection toutes les notices de la page en cours qui ne sont pas encore sélectionnées.', 'docalist-userdata'),
+            __('Ajoute à la sélection toutes les notices de la page en cours qui ne sont pas encore sélectionnées.', 'docalist-basket'),
             '#',
             $label
         );
@@ -112,7 +115,7 @@ class BasketWidget extends WP_Widget
         $label && printf($link,
             'basket-removepage',
             'display:none',
-            __('Enlève de la sélection toutes les notices de la page en cours qui sont actuellement sélectionnées.', 'docalist-userdata'),
+            __('Enlève de la sélection toutes les notices de la page en cours qui sont actuellement sélectionnées.', 'docalist-basket'),
             '#',
             $label
         );
@@ -123,7 +126,7 @@ class BasketWidget extends WP_Widget
         $label && printf($link,
             'basket-clear',
             $count ? '' : 'display:none',
-            __('Vide la sélection et enlève toutes les notices actuellement sélectionnées.', 'docalist-userdata'),
+            __('Vide la sélection et enlève toutes les notices actuellement sélectionnées.', 'docalist-basket'),
             '#',
             $label
         );
@@ -152,28 +155,28 @@ class BasketWidget extends WP_Widget
             Les zones suivantes vous permettent de paramétrer le titre et les libellés des liens affichés dans le widget panier.
             Vous pouvez utiliser <code>%d</code> pour indiquer le nombre de notices ajoutées/supprimées/présentes dans la sélection.
             Pour les liens, si vous n\'indiquez aucun libellé, le lien correspondant ne sera pas affiché dans le widget.
-            ', 'docalist-userdata');
+            ', 'docalist-basket');
         $form->tag('p.basket-help', $help)->setAttribute('style', 'display: none');
 
         $form->input('title')
             ->setAttribute('id', $this->get_field_id('title')) // pour que le widget affiche le bon titre en backoffice. cf widgets.dev.js, fonction appendTitle(), L250
-            ->setLabel(__('<b>Titre du widget</b>', 'docalist-userdata'))
+            ->setLabel(__('<b>Titre du widget</b>', 'docalist-basket'))
             ->addClass('widefat');
 
         $form->input('show')
-            ->setLabel(__('<b>Afficher la sélection</b>', 'docalist-userdata'))
+            ->setLabel(__('<b>Afficher la sélection</b>', 'docalist-basket'))
             ->addClass('widefat');
 
         $form->input('addpage')
-            ->setLabel(__('<b>Ajouter les notices de la page</b>', 'docalist-userdata'))
+            ->setLabel(__('<b>Ajouter les notices de la page</b>', 'docalist-basket'))
             ->addClass('widefat');
 
         $form->input('removepage')
-            ->setLabel(__('<b>Enlever les notices de la page</b>', 'docalist-userdata'))
+            ->setLabel(__('<b>Enlever les notices de la page</b>', 'docalist-basket'))
             ->addClass('widefat');
 
         $form->input('clear')
-            ->setLabel(__('<b>Vider la sélection</b>', 'docalist-userdata'))
+            ->setLabel(__('<b>Vider la sélection</b>', 'docalist-basket'))
             ->addClass('widefat');
 
 
@@ -188,11 +191,11 @@ class BasketWidget extends WP_Widget
     protected function defaultSettings()
     {
         return [
-            'title' => __('Panier (%d)', 'docalist-userdata'),
-            'show' => __('Afficher', 'docalist-userdata'),
-            'addpage' => __('Ajouter tout (%d)', 'docalist-userdata'),
-            'removepage' => __('Enlever la page (%d)', 'docalist-userdata'),
-            'clear' => __('Vider', 'docalist-userdata'),
+            'title' => __('Panier (%d)', 'docalist-basket'),
+            'show' => __('Afficher', 'docalist-basket'),
+            'addpage' => __('Ajouter tout (%d)', 'docalist-basket'),
+            'removepage' => __('Enlever la page (%d)', 'docalist-basket'),
+            'clear' => __('Vider', 'docalist-basket'),
         ];
     }
 
