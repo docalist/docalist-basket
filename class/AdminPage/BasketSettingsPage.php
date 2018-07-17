@@ -1,53 +1,54 @@
 <?php declare(strict_types=1);
 /**
- * This file is part of Docalist UserData.
+ * This file is part of Docalist Basket.
  *
  * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
+ */
+namespace Docalist\Basket\AdminPage;
+
+use Docalist\AdminPage;
+use Docalist\Basket\Settings\BasketSettings;
+
+/**
+ * Page de configuration du module panier.
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\UserData;
-
-use Docalist\AdminPage;
-
-/**
- * Options de configuration du plugin.
- */
-class SettingsPage extends AdminPage
+class BasketSettingsPage extends AdminPage
 {
     /**
-     * Paramètres du plugin.
+     * Paramètres du module panier.
      *
-     * @var Settings
+     * @var BasketSettings
      */
     protected $settings;
 
     /**
      * Crée la page de réglages des paramètres du plugin.
      *
-     * @param Settings $settings Paramètres du plugin.
+     * @param BasketSettings $settings Paramètres du plugin.
      */
-    public function __construct(Settings $settings)
+    public function __construct(BasketSettings $settings)
     {
         $this->settings = $settings;
 
         parent::__construct(
-            'docalist-userdata-settings',               // ID
-            'options-general.php',                      // page parent
-            __('Panier Docalist', 'docalist-userdata')  // libellé menu
+            'docalist-basket-settings',                 // ID
+            'options-general.php',                      // Page parent
+            __('Panier Docalist', 'docalist-basket')    // Libellé du menu
         );
 
         // Ajoute un lien "Réglages" dans la page des plugins
-        $filter = 'plugin_action_links_docalist-userdata/docalist-userdata.php';
+        $filter = 'plugin_action_links_docalist-basket/docalist-basket.php';
         add_filter($filter, function ($actions) {
             return [
                 'settings' => sprintf(
                     '<a href="%s">%s</a>',
                     esc_attr($this->getUrl()),
-                    __('Réglages', 'docalist-userdata')
+                    __('Réglages', 'docalist-basket')
                 )
             ] + $actions;
         });
@@ -66,16 +67,16 @@ class SettingsPage extends AdminPage
         if ($this->isPost()) {
             try {
                 $_POST = wp_unslash($_POST);
+
                 $this->settings->basketpage = (int) $_POST['basketpage'];
-                $this->settings->htmlInactive = $_POST['htmlInactive'];
-                $this->settings->htmlActive = $_POST['htmlActive'];
-                $this->settings->linksBeforeContent = (bool) $_POST['linksBeforeContent'];
+                $this->settings->single = $_POST['single'];
+                $this->settings->list = $_POST['list'];
 
                 // $settings->validate();
                 $this->settings->save();
 
                 docalist('admin-notices')->success(
-                    __('Options enregistrées.', 'docalist-userdata')
+                    __('Les options du panier Docalist ont été enregistrées.', 'docalist-basket')
                 );
 
                 return $this->redirect($this->getUrl($this->getDefaultAction()), 303);
@@ -84,7 +85,7 @@ class SettingsPage extends AdminPage
             }
         }
 
-        return $this->view('docalist-userdata:settings/basket', [
+        return $this->view('docalist-basket:settings', [
             'settings' => $this->settings,
         ]);
     }
