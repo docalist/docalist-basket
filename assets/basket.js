@@ -1,5 +1,5 @@
 /**
- * This file is part of Docalist UserData.
+ * This file is part of Docalist Basket.
  *
  * Copyright (C) 2015-2018 Daniel Ménard
  *
@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
     /**
      * Simplifie le nom de la variable fournie à wp_localize_script() dans BasketController
      */
-    var settings = docalistUserdataBasketSettings;
+    var settings = docalistBasketSettings;
 
     /**
      * Appelle l'API du panier.
@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
             url += '&refs=' + refs;
         }
         $.getJSON(url, function(response) {
-            $(document).trigger('docalist-userdata-basket-changed', response);
+            $(document).trigger('docalist-basket-changed', response);
         });
     }
 
@@ -136,7 +136,7 @@ jQuery(document).ready(function($) {
     /**
      * Mise à jour du widget et de l'état des notices.
      */
-    $(document).on('docalist-userdata-basket-changed', function(e, response) {
+    $(document).on('docalist-basket-changed', function(e, response) {
         // Met à jour les liens du widget
         if (response) {
             $('.basket-count').html(response.count);
@@ -165,5 +165,5 @@ jQuery(document).ready(function($) {
 
     });
 
-    $(document).trigger('docalist-userdata-basket-changed');
+    $(document).trigger('docalist-basket-changed');
 });
