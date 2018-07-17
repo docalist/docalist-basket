@@ -1,7 +1,7 @@
 {
 	"type": "wordpress-plugin",
-	"name": "docalist/docalist-userdata",
-	"description": "Docalist : données utilisateurs.",
+	"name": "docalist/docalist-basket",
+	"description": "Docalist : panier de notices.",
     "homepage": "http://docalist.org/",
 	"license": "GPL-2.0",
 
@@ -24,6 +24,18 @@
     
 	"require": {
 		"composer/installers": "~1.0",
-		"php": ">=5.4"
-	}
+		"php": ">=7.1"
+	},
+
+    "autoload": {
+        "psr-4": {"Docalist\\Basket\\": "class"}
+    },
+    "autoload-dev": {
+        "psr-4": {"Docalist\\Basket\\Tests\\": "tests"}
+    },
+
+    "config": {
+        "optimize-autoloader": true,
+        "classmap-authoritative": true
+    }
 }
