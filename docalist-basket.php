@@ -1,29 +1,29 @@
-<?php
+<?php declare(strict_types=1);
 /**
- * This file is part of Docalist UserData.
+ * This file is part of Docalist Basket.
  *
  * Copyright (C) 2015-2018 Daniel Ménard
  *
  * For copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
  *
- * Plugin Name: Docalist User Data
+ * Plugin Name: Docalist Basket
  * Plugin URI:  https://docalist.org/
- * Description: Docalist : données utilisateurs.
- * Version:     0.3.0
+ * Description: Docalist : panier de notices.
+ * Version:     0.4.0
  * Author:      Daniel Ménard
  * Author URI:  https://docalist.org/
- * Text Domain: docalist-userdata
+ * Text Domain: docalist-basket
  * Domain Path: /languages
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\UserData;
+namespace Docalist\Basket;
 
 /**
  * Version du plugin.
  */
-define('DOCALIST_USERDATA_VERSION', '0.3.0'); // Garder synchro avec la version indiquée dans l'entête
+define('DOCALIST_BASKET_VERSION', '0.4.0'); // Garder synchro avec la version indiquée dans l'entête
 
 /**
  * Path absolu du répertoire dans lequel le plugin est installé.
@@ -34,33 +34,33 @@ define('DOCALIST_USERDATA_VERSION', '0.3.0'); // Garder synchro avec la version 
  * Si le répertoire du plugin est un lien symbolique, la constante doit être définie manuellement dans le fichier
  * wp_config.php et pointer sur le lien symbolique et non sur le répertoire réel.
  */
-!defined('DOCALIST_USERDATA_DIR') && define('DOCALIST_USERDATA_DIR', __DIR__);
+!defined('DOCALIST_BASKET_DIR') && define('DOCALIST_BASKET_DIR', __DIR__);
 
 /**
  * Path absolu du fichier principal du plugin.
  */
-define('DOCALIST_USERDATA', DOCALIST_USERDATA_DIR . DIRECTORY_SEPARATOR . basename(__FILE__));
+define('DOCALIST_BASKET', DOCALIST_BASKET_DIR . DIRECTORY_SEPARATOR . basename(__FILE__));
 
 /**
  * Url de base du plugin.
  */
-define('DOCALIST_USERDATA_URL', plugins_url('', DOCALIST_USERDATA));
+define('DOCALIST_BASKET_URL', plugins_url('', DOCALIST_BASKET));
 
 /**
  * Initialise le plugin.
  */
 add_action('plugins_loaded', function () {
     // Auto désactivation si les plugins dont on a besoin ne sont pas activés
-    $dependencies = ['DOCALIST_CORE', 'DOCALIST_DATA'];
+    $dependencies = ['DOCALIST_CORE'];
     foreach ($dependencies as $dependency) {
         if (! defined($dependency)) {
             return add_action('admin_notices', function () use ($dependency) {
-                deactivate_plugins(DOCALIST_USERDATA);
+                deactivate_plugins(DOCALIST_BASKET);
                 unset($_GET['activate']); // empêche wp d'afficher "extension activée"
                 printf(
                     '<div class="%s"><p><b>%s</b> has been deactivated because it requires <b>%s</b>.</p></div>',
                     'notice notice-error is-dismissible',
-                    'Docalist Databases',
+                    'Docalist Basket',
                     ucwords(strtolower(strtr($dependency, '_', ' ')))
                 );
             });
@@ -68,6 +68,9 @@ add_action('plugins_loaded', function () {
     }
 
     // Ok
-    docalist('autoloader')->add(__NAMESPACE__, __DIR__ . '/class');
-    docalist('services')->add('docalist-userdata', new Plugin());
+    docalist('autoloader')
+        ->add(__NAMESPACE__, __DIR__ . '/class')
+        ->add(__NAMESPACE__ . '\Tests', DOCALIST_BASKET_DIR . '/tests');
+
+    docalist('services')->add('docalist-basket-plugin', new Plugin());
 });
