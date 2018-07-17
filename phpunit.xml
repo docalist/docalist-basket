@@ -12,7 +12,7 @@
          bootstrap="tests/bootstrap.php"
 >
     <testsuites>
-        <testsuite name="Docalist UserData">
+        <testsuite name="Docalist Basket">
             <directory>./tests/</directory>
         </testsuite>
     </testsuites>
