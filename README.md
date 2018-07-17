@@ -1,3 +1,3 @@
-# docalist-userdata
+# docalist-basket
 
-Docalist : données utilisateurs.
+Docalist : panier de notices.
