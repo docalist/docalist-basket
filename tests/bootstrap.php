@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 /**
- * This file is part of Docalist UserData.
+ * This file is part of Docalist Basket.
  *
  * Copyright (C) 2015-2018 Daniel Ménard
  *
@@ -9,15 +9,13 @@
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-namespace Docalist\Tests\UserData;
+namespace Docalist\Tests\Basket;
 
 // Environnement de test
 $GLOBALS['wp_tests_options'] = [
     'active_plugins' => [
         'docalist-core/docalist-core.php',
-        'docalist-search/docalist-search.php',
-        'docalist-data/docalist-data.php',
-        'docalist-userdata/docalist-userdata.php',
+        'docalist-basket/docalist-basket.php',
     ],
 ];
 
