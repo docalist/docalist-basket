@@ -68,9 +68,10 @@ class BasketSettingsPage extends AdminPage
             try {
                 $_POST = wp_unslash($_POST);
 
-                $this->settings->basketpage = (int) $_POST['basketpage'];
+                $this->settings->role= $_POST['role'];
                 $this->settings->single = $_POST['single'];
                 $this->settings->list = $_POST['list'];
+                $this->settings->basketpage = (int) $_POST['basketpage'];
 
                 // $settings->validate();
                 $this->settings->save();
