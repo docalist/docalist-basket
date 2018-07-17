@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE phpcs-ruleset>
+<ruleset name="docalist">
+
+    <description>Standard de codage pour Docalist.</description>
+
+    <file>./class</file>
+    <file>./views</file>
+    <file>./tests</file>
+
+    <rule ref="PSR2" />
+    
+    <!--
+        Ignore la règle "InvalidEOLChar" (sous windows on a crlf).
+        Les fins de ligne sont normalisées par git. 
+     -->
+    <rule ref="Generic.Files.LineEndings.InvalidEOLChar">
+        <severity>0</severity>
+    </rule>   
+    
+    <!--
+        Ignore la règle "SpaceAfterCloseBrace" : je commente souvent mes clauses "else".
+     -->
+    <rule ref="Squiz.ControlStructures.ControlSignature.SpaceAfterCloseBrace">
+        <severity>0</severity>
+    </rule>
+ 
+    <!-- 
+        Active automatiquement certaines options pour éviter de les passer en ligne de commande : 
+        - v : Print verbose output
+        - s : Show sniff codes in all reports
+     -->
+    <arg value="v" />                       <!-- v: Print verbose output, s: Show sniff codes -->
+    <arg name="colors" />                   <!-- colors: Use colors in output -->
+    <arg name="encoding" value="utf-8" />   <!-- encoding: utf-8 -->
+    <arg name="report-width" value="auto"/> <!-- report-width: screen reports width -->
+</ruleset>
