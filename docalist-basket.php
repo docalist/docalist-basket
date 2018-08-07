@@ -51,7 +51,7 @@ define('DOCALIST_BASKET_URL', plugins_url('', DOCALIST_BASKET));
  */
 add_action('plugins_loaded', function () {
     // Auto désactivation si les plugins dont on a besoin ne sont pas activés
-    $dependencies = ['DOCALIST_CORE'];
+    $dependencies = ['DOCALIST_CORE', 'DOCALIST_DATA', 'DOCALIST_SEARCH'];
     foreach ($dependencies as $dependency) {
         if (! defined($dependency)) {
             return add_action('admin_notices', function () use ($dependency) {
