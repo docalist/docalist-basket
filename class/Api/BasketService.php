@@ -144,4 +144,16 @@ class BasketService
 
         return is_null($baskets) ? null : $baskets->getBasket();
     }
+
+    /**
+     * Indique si un post d'un type donné peut être ajouté au panier.
+     *
+     * @param string $type Le type de post à tester.
+     *
+     * @return bool Retourne true si le panier supporte le post type indiqué, false sinon.
+     */
+    public function isSupportedType(string $type): bool
+    {
+        return isset($this->settings->types[$type]);
+    }
 }
