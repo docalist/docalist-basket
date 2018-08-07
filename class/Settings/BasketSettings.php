@@ -10,6 +10,7 @@
 namespace Docalist\Basket\Settings;
 
 use Docalist\Type\Settings;
+use Docalist\Basket\Settings\BasketPostType;
 use Docalist\Basket\Settings\LimitsByRole;
 use Docalist\Basket\Settings\ButtonSettings;
 use Docalist\Type\WordPressPage;
@@ -17,10 +18,11 @@ use Docalist\Type\WordPressPage;
 /**
  * Paramètres du module panier.
  *
- * @property LimitsByRole   $role       Rôles utilisateurs autorisés et limites associées.
- * @property ButtonSettings $single     Paramètres du bouton panier pour une notice seule.
- * @property ButtonSettings $list       Paramètres du bouton panier dans une liste de notices.
- * @property WordPressPage  $basketpage ID de la page WordPress permettant d'afficher le panier.
+ * @property LimitsByRole[]     $role       Rôles utilisateurs autorisés et limites associées.
+ * @property BasketPostType[]   $types      Post types autorisés.
+ * @property ButtonSettings     $single     Paramètres du bouton panier pour une notice seule.
+ * @property ButtonSettings     $list       Paramètres du bouton panier dans une liste de notices.
+ * @property WordPressPage      $basketpage ID de la page WordPress permettant d'afficher le panier.
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
@@ -32,11 +34,6 @@ class BasketSettings extends Settings
     {
         return [
             'fields' => [
-/*
-                'basketable' =>  [
-                    'type' => BasketableContent::class,
-                ],
-*/
                 'role' => [
                     'type' => LimitsByRole::class,
                     'label' => __('Utilisateurs autorisés', 'docalist-basket'),
@@ -44,6 +41,18 @@ class BasketSettings extends Settings
                         'Choisissez les utilisateurs qui auront un panier en choisissant, pour chaque rôle WordPress
                         le nombre maximum de paniers autorisés et le nombre maximum de notices que chaque panier peut
                         contenir',
+                        'docalist-basket'
+                    ),
+                ],
+
+                'types' =>  [
+                    'type' => BasketPostType::class,
+                    'repeatable' => true,
+                    'key' => true,
+                    'label' => __('Types de posts', 'docalist-basket'),
+                    'description' => __(
+                        'Choisissez les types de contenus qui peuvent être ajoutés au panier. Le bouton du panier
+                        ne sera généré que pour les contenus de ce type.',
                         'docalist-basket'
                     ),
                 ],
