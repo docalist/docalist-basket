@@ -14,6 +14,7 @@ use Docalist\Views;
 use Docalist\Basket\AdminPage\BasketSettingsPage;
 use Docalist\Basket\Api\BasketService;
 use Docalist\Basket\Widget\BasketWidget;
+use Docalist\Basket\Api\BasketAjax;
 
 /**
  * Plugin docalist-basket.
@@ -30,10 +31,13 @@ class Plugin
         // Charge la configuration du plugin
         $settings = new BasketSettings(docalist('settings-repository'));
 
-        // Crée le service docalist "basket"
+        // Crée le service docalist('basket')
         docalist('services')->add('basket', function () use ($settings) {
             return new BasketService($settings);
         });
+
+        // Crée le service docalist('basket-ajax')
+        docalist('services')->add('basket-ajax', new BasketAjax(docalist('basket')));
 
         // Ajoute notre répertoire "views" au service "docalist-views"
         add_filter('docalist_service_views', function (Views $views) {
