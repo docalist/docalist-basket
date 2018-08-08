@@ -16,7 +16,7 @@ use Docalist\Basket\Settings\ButtonSettings;
 use Docalist\Basket\Settings\ButtonLocation;
 
 /**
- * Injecte les boutons du panier dans les notices.
+ * Injecte le bouton du panier dans les notices.
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
