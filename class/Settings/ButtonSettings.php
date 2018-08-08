@@ -10,7 +10,7 @@
 namespace Docalist\Basket\Settings;
 
 use Docalist\Type\Composite;
-use Docalist\Type\Text;
+use Docalist\Type\LargeText;
 use Docalist\Basket\Settings\ButtonLocation;
 
 /**
@@ -20,8 +20,8 @@ use Docalist\Basket\Settings\ButtonLocation;
  * code html à générer pour le bouton.
  *
  * @property ButtonLocation $location   Emplacement du bouton.
- * @property Text           $add        Code html du bouton "ajouter au panier".
- * @property Text           $remove     Code html du bouton "enlever du panier".
+ * @property LargeText      $add        Code html du bouton "ajouter au panier".
+ * @property LargeText      $remove     Code html du bouton "enlever du panier".
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
@@ -36,14 +36,14 @@ class ButtonSettings extends Composite
                 ],
 
                 'add' => [
-                    'type' => Text::class,
+                    'type' => LargeText::class,
+                    'editor' => 'htmleditor',
                     'label' => __('Ajouter au panier', 'docalist-basket'),
                     'description' => __(
                         'Vous pouvez personnaliser le code HTML comme vous le souhaitez mais le tag du bouton doit
                         obligatoirement avoir la classe CSS <code>basket-add</code>.',
                         'docalist-basket'
                     ),
-                    'editor' => 'input-large',
                     'default' => sprintf(
                         '<button class="basket-add">%s</button>',
                         __('Sélectionner', 'docalist-basket')
@@ -51,14 +51,14 @@ class ButtonSettings extends Composite
                 ],
 
                 'remove' => [
-                    'type' => Text::class,
+                    'type' => LargeText::class,
+                    'editor' => 'htmleditor',
                     'label' => __('Enlever du panier', 'docalist-basket'),
                     'description' => __(
                         'Vous pouvez personnaliser le code HTML comme vous le souhaitez mais le tag du bouton doit
                         obligatoirement avoir la classe CSS <code>basket-remove</code>.',
                         'docalist-basket'
                     ),
-                    'editor' => 'input-large',
                     'default' => sprintf(
                         '<button class="basket-remove">%s</button>',
                         __('Désélectionner', 'docalist-basket')
