@@ -7,7 +7,7 @@
  * For copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
  */
-namespace Docalist\Basket\Api;
+namespace Docalist\Basket\Service;
 
 use Docalist\Basket\Settings\BasketSettings;
 use Docalist\Basket\Baskets;

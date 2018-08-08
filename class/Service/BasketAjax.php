@@ -7,10 +7,10 @@
  * For copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
  */
-namespace Docalist\Basket\Api;
+namespace Docalist\Basket\Service;
 
 use Docalist\Controller;
-use Docalist\Basket\Api\BasketService;
+use Docalist\Basket\Service\BasketService;
 use Docalist\Basket\Basket;
 use Docalist\Http\JsonResponse;
 
