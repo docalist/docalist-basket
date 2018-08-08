@@ -51,6 +51,16 @@ class BasketService
     }
 
     /**
+     * Retourne les paramètres du service panier.
+     *
+     * @return BasketSettings
+     */
+    public function getSettings(): BasketSettings
+    {
+        return $this->settings;
+    }
+
+    /**
      * Réinitialise le service panier.
      *
      * Cette méthode est utile lorsque l'utilisateur WordPress en cours change. Elle permet de réinitialiser le
