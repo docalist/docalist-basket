@@ -19,7 +19,7 @@ use Docalist\Http\JsonResponse;
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-class BasketAjax extends Controller
+class AjaxController extends Controller
 {
     /**
      * Message généré quand l'utilisateur n'a pas les droits suffisants pour accéder à l'API du panier.
