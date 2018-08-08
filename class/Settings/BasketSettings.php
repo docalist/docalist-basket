@@ -57,22 +57,22 @@ class BasketSettings extends Settings
                     ),
                 ],
 
-                'single' => [
-                    'type' => ButtonSettings::class,
-                    'label' => __('Bouton du panier pour une notice seule', 'docalist-basket'),
-                    'description' => __(
-                        'Ces paramètres s\'appliquent lorsque vous êtes sur le permalien d\'une notice
-                        (une page affichant le détail d\'une notice).',
-                        'docalist-basket'
-                    ),
-                ],
-
                 'list' => [
                     'type' => ButtonSettings::class,
                     'label' => __('Bouton du panier dans une liste de notices', 'docalist-basket'),
                     'description' => __(
                         'Ces paramètres s\'appliquent lorsque vous êtes sur une page qui affiche une liste
                         de notices (résultats d\'une recherche ou page d\'archives).',
+                        'docalist-basket'
+                    ),
+                ],
+
+                'single' => [
+                    'type' => ButtonSettings::class,
+                    'label' => __('Bouton du panier pour une notice seule', 'docalist-basket'),
+                    'description' => __(
+                        'Ces paramètres s\'appliquent lorsque vous êtes sur le permalien d\'une notice
+                        (une page affichant le détail d\'une notice).',
                         'docalist-basket'
                     ),
                 ],
