@@ -9,10 +9,11 @@
  */
 namespace Docalist\Basket\Service;
 
-use Docalist\Basket\Settings\BasketSettings;
-use Docalist\Basket\Service\AjaxController;
-use Docalist\Basket\Baskets;
 use Docalist\Basket\Basket;
+use Docalist\Basket\Baskets;
+use Docalist\Basket\Service\AjaxController;
+use Docalist\Basket\Service\ButtonGenerator;
+use Docalist\Basket\Settings\BasketSettings;
 use Docalist\Basket\Storage\UserMetaBasketStorage;
 use WP_User;
 
@@ -36,6 +37,13 @@ class BasketService
      * @var AjaxController
      */
     protected $ajaxController;
+
+    /**
+     * Le générateur chargé d'injecter le bouton panier dans les notices.
+     *
+     * @var ButtonGenerator
+     */
+    protected $buttonGenerator;
 
     /**
      * L'objet Baskets de l'utilisateur en cours.
@@ -62,6 +70,7 @@ class BasketService
         $this->ajaxController = new AjaxController($this);
 
         // Crée le générateur de bouton
+        $this->buttonGenerator = new ButtonGenerator($this);
     }
 
     /**
@@ -82,6 +91,16 @@ class BasketService
     public function getAjaxController(): AjaxController
     {
         return $this->ajaxController;
+    }
+
+    /**
+     * Retourne le générateur chargé d'injecter le bouton panier dans les notices.
+     *
+     * @return ButtonGenerator
+     */
+    public function getButtonGenerator(): ButtonGenerator
+    {
+        return $this->buttonGenerator;
     }
 
     /**
