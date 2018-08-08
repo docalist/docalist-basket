@@ -10,6 +10,7 @@
 namespace Docalist\Basket\Service;
 
 use Docalist\Basket\Settings\BasketSettings;
+use Docalist\Basket\Service\AjaxController;
 use Docalist\Basket\Baskets;
 use Docalist\Basket\Basket;
 use Docalist\Basket\Storage\UserMetaBasketStorage;
@@ -30,6 +31,13 @@ class BasketService
     protected $settings;
 
     /**
+     * Le contrôleur utilisé pour les requêtes Ajax.
+     *
+     * @var AjaxController
+     */
+    protected $ajaxController;
+
+    /**
      * L'objet Baskets de l'utilisateur en cours.
      *
      * Initialement, la propriété est à false pour indiquer "non initialisé". Elle est initialisée par getBaskets()
@@ -47,7 +55,13 @@ class BasketService
      */
     public function __construct(BasketSettings $settings)
     {
+        // Stocke les paramètres du service
         $this->settings = $settings;
+
+        // Crée le contrôleur ajax
+        $this->ajaxController = new AjaxController($this);
+
+        // Crée le générateur de bouton
     }
 
     /**
@@ -58,6 +72,16 @@ class BasketService
     public function getSettings(): BasketSettings
     {
         return $this->settings;
+    }
+
+    /**
+     * Retourne le contrôleur chargé de traiter les requêtes AJAX sur le panier.
+     *
+     * @return AjaxController
+     */
+    public function getAjaxController(): AjaxController
+    {
+        return $this->ajaxController;
     }
 
     /**
