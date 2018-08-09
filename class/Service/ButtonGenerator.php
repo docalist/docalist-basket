@@ -92,27 +92,24 @@ class ButtonGenerator
         // Installe les filtres requis en fonction de l'emplacement du bouton
         switch ($this->buttonSettings->location->getPhpValue()) {
             case ButtonLocation::BEFORE_TITLE:
-                add_filter('the_title', [$this, 'prependButton'], 99999);
+                add_filter('the_title', [$this, 'prependButton'], 10, 2);       // title + post_id
                 break;
 
             case ButtonLocation::AFTER_TITLE:
-                add_filter('the_title', [$this, 'appendButton'], 99999);
+                add_filter('the_title', [$this, 'appendButton'], 10, 2);        // title + post_id
                 break;
-
             case ButtonLocation::BEFORE_CONTENT:
-                add_filter('the_excerpt', [$this, 'prependButton'], 99999);
-                add_filter('the_content', [$this, 'prependButton'], 99999);
+                add_filter('get_the_excerpt', [$this, 'prependButton'], 10, 2); // excerpt + post_object
+                add_filter('the_content', [$this, 'prependButton'], 10, 1);     // content uniquement
                 break;
 
             case ButtonLocation::AFTER_CONTENT:
-                add_filter('the_excerpt', [$this, 'appendButton'], 99999);
-                add_filter('the_content', [$this, 'appendButton'], 99999);
+                add_filter('get_the_excerpt', [$this, 'appendButton'], 10, 2);  // excerpt + post_object
+                add_filter('the_content', [$this, 'appendButton'], 10, 1);      // content uniquement
                 break;
 
-            case ButtonLocation::NO_BUTTON:
-            default:
+            default: // ButtonLocation::NO_BUTTON ou emplacement invalide
                 return;
-
         }
 
         // Ajoute des classes CSS si on génère un bouton
@@ -138,27 +135,26 @@ class ButtonGenerator
         // Supprime les filtres installés pour générer le bouton
         switch ($this->buttonSettings->location->getPhpValue()) {
             case ButtonLocation::BEFORE_TITLE:
-                remove_filter('the_title', [$this, 'prependButton'], 99999);
+                remove_filter('the_title', [$this, 'prependButton'], 10);
                 break;
 
             case ButtonLocation::AFTER_TITLE:
-                remove_filter('the_title', [$this, 'appendButton'], 99999);
+                remove_filter('the_title', [$this, 'appendButton'], 10);
                 break;
 
             case ButtonLocation::BEFORE_CONTENT:
-                remove_filter('the_excerpt', [$this, 'prependButton'], 99999);
-                remove_filter('the_content', [$this, 'prependButton'], 99999);
+                remove_filter('get_the_excerpt', [$this, 'prependButton'], 10);
+                remove_filter('the_content', [$this, 'prependButton'], 10);
                 break;
 
             case ButtonLocation::AFTER_CONTENT:
-                remove_filter('the_excerpt', [$this, 'appendButton'], 99999);
-                remove_filter('the_content', [$this, 'appendButton'], 99999);
+                remove_filter('get_the_excerpt', [$this, 'appendButton'], 10);
+                remove_filter('the_content', [$this, 'appendButton'], 10);
                 break;
 
-            case ButtonLocation::NO_BUTTON:
-            default:
-                return;
 
+            default: // ButtonLocation::NO_BUTTON ou emplacement invalide
+                return;
         }
 
         // Supprime le filtre ajouté pour générer les classes CSS
@@ -205,49 +201,71 @@ class ButtonGenerator
      * Ajoute le bouton panier avant le contenu passé en paramètre.
      *
      * @param string $content
+     * @param int|WP_Post|null $post
      *
      * @return string
      */
-    public function prependButton(string $content): string
+    public function prependButton(string $content, $post = null): string
     {
-        return $this->getButton() . $content;
+        return $this->getButton($post) . $content;
     }
 
     /**
      * Ajoute le bouton panier après le contenu passé en paramètre.
      *
      * @param string $content
+     * @param int|WP_Post|null $post
      *
      * @return string
      */
-    public function appendButton(string $content): string
+    public function appendButton(string $content, $post = null): string
     {
-        return $content . $this->getButton();
+        return $content . $this->getButton($post);
     }
 
     /**
      * Ajoute un bouton sélectionner/déselectionner dans le contenu passé en paramètre si le post en cours est
      * supporté par le panier.
      *
+     * @param int|WP_Post|null $post
+     *
      * @return string
      */
-    private function getButton(): string
+    private function getButton($post = null): string
     {
-        // Récupère l'ID du post en cours
-        $postID = (int) get_the_ID();
+        // Détermine le post à traiter (exit si aucun)
+        // Il est soit passé en paramètre (ID pour the_title, post object pour get_the_excerpt), soit récupéré dans
+        // la global $post (pour the_content qui ne transmet ni ID ni post)
+        $post = get_post($post);
+        if (empty($post)) {
+            return '';
+        }
 
-        // On ne génère aucun bouton si le post ne peut pas être ajouté au panier
+        // Récupère son ID
+        $postID = $post->ID;
+
+        // On ne fait rien si l'ID obtenu ne correspond pas à l'ID du post en cours dans la boucle WordPress
+        // (i.e. si l'un des filtres installés a été appellé pour un autre post que le post en cours),
+        if ($postID !== get_the_ID()) {
+            return '';
+        }
+
+        // On ne génère aucun bouton si le panier n'accepte pas ce type de post
         if (! $this->isBasketable($postID)) {
             return '';
         }
 
-        // Génère un bouton "enlever" si la notice est déjà dans le panier
-        if ($this->basket->has($postID)) {
-            return $this->buttonSettings->remove->getPhpValue();
-        }
+        // Récupère le code html du bouton à générer ("enlever" si la notice est déjà dans le panier, "ajouter" sinon)
+        $settings = $this->buttonSettings;
+        $button = $this->basket->has($postID) ? 'remove' : 'add';
+        $button = $this->buttonSettings->$button->getPhpValue();
 
-        // Génère un bouton "ajouter" sinon
-        return $this->buttonSettings->add->getPhpValue();
+        // Si le code html contient des retours chariots, wpautop les convertit en <br>
+        // Pour contourner le problème, on supprime les cr/lf+espaces par un esapce unique
+        $button = preg_replace("~[\n\r]+\s*~", ' ', $button);
+
+        // Ok
+        return $button;
     }
 
     /**
