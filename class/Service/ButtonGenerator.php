@@ -168,9 +168,6 @@ class ButtonGenerator
         // Supprime le filtre ajouté pour générer les classes CSS
         remove_filter('post_class', [$this, 'filterPostClass'], self::PRIORITY, 3);
 
-        // Initialise le compteur de notices basketables
-        $this->count = 0;
-
         // Supprime l'action de fin de boucle
         remove_action('loop_end', [$this, 'onLoopEnd']);
 
