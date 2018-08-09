@@ -7,9 +7,9 @@
  * For copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
  */
-namespace Docalist\Basket\Tests\Api;
+namespace Docalist\Basket\Tests\Service;
 
-use Docalist\Basket\Tests\Api\BasketApiTestCase;
+use Docalist\Basket\Tests\Service\BasketUnitTestCase;
 use Docalist\Basket\Baskets;
 use Docalist\Basket\Basket;
 
@@ -18,7 +18,7 @@ use Docalist\Basket\Basket;
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-class BasketServiceTest extends BasketApiTestCase
+class BasketServiceTest extends BasketUnitTestCase
 {
     /**
      * Jeu de tests pour testCoreMethods.

@@ -7,19 +7,29 @@
  * For copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
  */
-namespace Docalist\Basket\Tests\Api;
+namespace Docalist\Basket\Tests\Service;
 
-use Docalist\Basket\Tests\Api\BasketApiTestCase;
+use Docalist\Basket\Tests\Service\BasketUnitTestCase;
+use Docalist\Basket\Service\AjaxController;
 use Docalist\Http\JsonResponse;
-use Docalist\Basket\Api\BasketAjax;
 
 /**
  * Teste la classe BasketAjax.
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-class BasketAjaxTest extends BasketApiTestCase
+class AjaxControllerTest extends BasketUnitTestCase
 {
+    /**
+     * Retourne le contrôleur ajax à tester.
+     *
+     * @return AjaxController
+     */
+    protected function getAjaxController(): AjaxController
+    {
+        return $this->getService()->getAjaxController();
+    }
+
     /**
      * Fournit des rôles pour lesquels le panier est autorisé.
      *
@@ -55,7 +65,7 @@ class BasketAjaxTest extends BasketApiTestCase
     public function testAdd(string $role): void
     {
         $this->setCurrentRole($role);
-        $ajax = $this->getAjax();
+        $ajax = $this->getAjaxController();
 
         $json = $ajax->actionAdd('1');
         $this->assertInstanceOf(JsonResponse::class, $json);
@@ -86,7 +96,7 @@ class BasketAjaxTest extends BasketApiTestCase
     public function testRemove(string $role): void
     {
         $this->setCurrentRole($role);
-        $ajax = $this->getAjax();
+        $ajax = $this->getAjaxController();
         $json = $ajax->actionAdd('1,2,3');
 
         $json = $ajax->actionRemove('1');
@@ -123,7 +133,7 @@ class BasketAjaxTest extends BasketApiTestCase
     public function testClear(string $role): void
     {
         $this->setCurrentRole($role);
-        $ajax = $this->getAjax();
+        $ajax = $this->getAjaxController();
 
         $json = $ajax->actionClear();
         $this->assertInstanceOf(JsonResponse::class, $json);
@@ -146,7 +156,7 @@ class BasketAjaxTest extends BasketApiTestCase
     public function testDump(string $role): void
     {
         $this->setCurrentRole($role);
-        $ajax = $this->getAjax();
+        $ajax = $this->getAjaxController();
 
         $json = $ajax->actionDump();
         $this->assertInstanceOf(JsonResponse::class, $json);
@@ -170,7 +180,7 @@ class BasketAjaxTest extends BasketApiTestCase
     public function testForbidden(string $role): void
     {
         $this->setCurrentRole($role);
-        $ajax = $this->getAjax();
+        $ajax = $this->getAjaxController();
 
         foreach (['add', 'remove', 'clear', 'dump'] as $action) {
             $action = $ajax::ACTION_PREFIX . ucfirst($action);
@@ -178,7 +188,7 @@ class BasketAjaxTest extends BasketApiTestCase
             $json = $ajax->$action('1');
             $this->assertInstanceOf(JsonResponse::class, $json);
             $this->assertSame(403, $json->getStatusCode());
-            $this->assertSame(json_encode(BasketAjax::FORBIDDEN_MESSAGE), $json->getContent());
+            $this->assertSame(json_encode(AjaxController::FORBIDDEN_MESSAGE), $json->getContent());
         }
     }
 }

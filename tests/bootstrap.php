@@ -15,6 +15,8 @@ namespace Docalist\Tests\Basket;
 $GLOBALS['wp_tests_options'] = [
     'active_plugins' => [
         'docalist-core/docalist-core.php',
+        'docalist-data/docalist-data.php',
+        'docalist-search/docalist-search.php',
         'docalist-basket/docalist-basket.php',
     ],
 ];

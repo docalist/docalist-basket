@@ -7,20 +7,19 @@
  * For copyright and license information, please view the
  * LICENSE file that was distributed with this source code.
  */
-namespace Docalist\Basket\Tests\Api;
+namespace Docalist\Basket\Tests\Service;
 
 use WP_UnitTestCase;
 use Docalist\Repository\SettingsRepository;
+use Docalist\Basket\Service\BasketService;
 use Docalist\Basket\Settings\BasketSettings;
-use Docalist\Basket\Api\BasketService;
-use Docalist\Basket\Api\BasketAjax;
 
 /**
  * Classe de base pour les tests de l'api.
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
-class BasketApiTestCase extends WP_UnitTestCase
+class BasketUnitTestCase extends WP_UnitTestCase
 {
     // Remarque : en cas d'erreur "Object WP_Error can not be converted to int", il faut supprimer les users
     // de la table wp_users dans la base sql utilisée pour les tests (wordpress-tests).
@@ -87,16 +86,6 @@ class BasketApiTestCase extends WP_UnitTestCase
     protected function getService(): BasketService
     {
         return new BasketService($this->getServiceSettings());
-    }
-
-    /**
-     * Retourne l'API ajax à tester.
-     *
-     * @return BasketAjax
-     */
-    protected function getAjax(): BasketAjax
-    {
-        return new BasketAjax($this->getService());
     }
 
     /**
