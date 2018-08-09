@@ -23,6 +23,14 @@ use Docalist\Basket\Settings\ButtonLocation;
 class ButtonGenerator
 {
     /**
+     * Priorité des filtres ajoutés dans onLoopStart.
+     *
+     * Important : pour the_content() et get_the_excerpt(), la priorité doit être supérieure à celle utilisée
+     * dans docalist-data/Database (9999) pour générer le contenu des notices docalist.
+     */
+    private const PRIORITY = 10000;
+
+    /**
      * Le service panier.
      *
      * @var BasketService
@@ -92,20 +100,20 @@ class ButtonGenerator
         // Installe les filtres requis en fonction de l'emplacement du bouton
         switch ($this->buttonSettings->location->getPhpValue()) {
             case ButtonLocation::BEFORE_TITLE:
-                add_filter('the_title', [$this, 'prependButton'], 10, 2);       // title + post_id
+                add_filter('the_title', [$this, 'prependButton'], self::PRIORITY, 2);       // title + post_id
                 break;
 
             case ButtonLocation::AFTER_TITLE:
-                add_filter('the_title', [$this, 'appendButton'], 10, 2);        // title + post_id
+                add_filter('the_title', [$this, 'appendButton'], self::PRIORITY, 2);        // title + post_id
                 break;
             case ButtonLocation::BEFORE_CONTENT:
-                add_filter('get_the_excerpt', [$this, 'prependButton'], 10, 2); // excerpt + post_object
-                add_filter('the_content', [$this, 'prependButton'], 10, 1);     // content uniquement
+                add_filter('get_the_excerpt', [$this, 'prependButton'], self::PRIORITY, 2); // excerpt + post_object
+                add_filter('the_content', [$this, 'prependButton'], self::PRIORITY, 1);     // content uniquement
                 break;
 
             case ButtonLocation::AFTER_CONTENT:
-                add_filter('get_the_excerpt', [$this, 'appendButton'], 10, 2);  // excerpt + post_object
-                add_filter('the_content', [$this, 'appendButton'], 10, 1);      // content uniquement
+                add_filter('get_the_excerpt', [$this, 'appendButton'], self::PRIORITY, 2);  // excerpt + post_object
+                add_filter('the_content', [$this, 'appendButton'], self::PRIORITY, 1);      // content uniquement
                 break;
 
             default: // ButtonLocation::NO_BUTTON ou emplacement invalide
@@ -113,7 +121,7 @@ class ButtonGenerator
         }
 
         // Ajoute des classes CSS si on génère un bouton
-        add_filter('post_class', [$this, 'filterPostClass'], 10, 3);
+        add_filter('post_class', [$this, 'filterPostClass'], self::PRIORITY, 3);
 
         // Initialise le compteur de notices basketables
         $this->count = 0;
@@ -135,21 +143,21 @@ class ButtonGenerator
         // Supprime les filtres installés pour générer le bouton
         switch ($this->buttonSettings->location->getPhpValue()) {
             case ButtonLocation::BEFORE_TITLE:
-                remove_filter('the_title', [$this, 'prependButton'], 10);
+                remove_filter('the_title', [$this, 'prependButton'], self::PRIORITY);
                 break;
 
             case ButtonLocation::AFTER_TITLE:
-                remove_filter('the_title', [$this, 'appendButton'], 10);
+                remove_filter('the_title', [$this, 'appendButton'], self::PRIORITY);
                 break;
 
             case ButtonLocation::BEFORE_CONTENT:
-                remove_filter('get_the_excerpt', [$this, 'prependButton'], 10);
-                remove_filter('the_content', [$this, 'prependButton'], 10);
+                remove_filter('get_the_excerpt', [$this, 'prependButton'], self::PRIORITY);
+                remove_filter('the_content', [$this, 'prependButton'], self::PRIORITY);
                 break;
 
             case ButtonLocation::AFTER_CONTENT:
-                remove_filter('get_the_excerpt', [$this, 'appendButton'], 10);
-                remove_filter('the_content', [$this, 'appendButton'], 10);
+                remove_filter('get_the_excerpt', [$this, 'appendButton'], self::PRIORITY);
+                remove_filter('the_content', [$this, 'appendButton'], self::PRIORITY);
                 break;
 
 
@@ -158,7 +166,7 @@ class ButtonGenerator
         }
 
         // Supprime le filtre ajouté pour générer les classes CSS
-        remove_filter('post_class', [$this, 'filterPostClass'], 10, 3);
+        remove_filter('post_class', [$this, 'filterPostClass'], self::PRIORITY, 3);
 
         // Initialise le compteur de notices basketables
         $this->count = 0;
