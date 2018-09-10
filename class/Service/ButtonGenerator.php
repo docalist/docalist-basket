@@ -11,6 +11,7 @@ namespace Docalist\Basket\Service;
 
 use Docalist\Basket\Service\BasketService;
 use Docalist\Basket\Basket;
+use WP_Post;
 use WP_Query;
 use Docalist\Basket\Settings\ButtonSettings;
 use Docalist\Basket\Settings\ButtonLocation;
@@ -59,6 +60,13 @@ class ButtonGenerator
     protected $buttonSettings;
 
     /**
+     * Le code html des boutons ajouter au panier('add') et enlever du panier ('remove')
+     *
+     * @var string[]
+     */
+    protected $buttons;
+
+    /**
      * Constructeur.
      *
      * @param BasketService $basketService Le service panier à utiliser.
@@ -97,6 +105,8 @@ class ButtonGenerator
             return;
         }
 
+        $this->initButtons($this->buttonSettings);
+
         // Installe les filtres requis en fonction de l'emplacement du bouton
         switch ($this->buttonSettings->location->getPhpValue()) {
             case ButtonLocation::BEFORE_TITLE:
@@ -106,6 +116,7 @@ class ButtonGenerator
             case ButtonLocation::AFTER_TITLE:
                 add_filter('the_title', [$this, 'appendButton'], self::PRIORITY, 2);        // title + post_id
                 break;
+
             case ButtonLocation::BEFORE_CONTENT:
                 add_filter('get_the_excerpt', [$this, 'prependButton'], self::PRIORITY, 2); // excerpt + post_object
                 add_filter('the_content', [$this, 'prependButton'], self::PRIORITY, 1);     // content uniquement
@@ -260,17 +271,8 @@ class ButtonGenerator
             return '';
         }
 
-        // Récupère le code html du bouton à générer ("enlever" si la notice est déjà dans le panier, "ajouter" sinon)
-        $settings = $this->buttonSettings;
-        $button = $this->basket->has($postID) ? 'remove' : 'add';
-        $button = $this->buttonSettings->$button->getPhpValue();
-
-        // Si le code html contient des retours chariots, wpautop les convertit en <br>
-        // Pour contourner le problème, on supprime les cr/lf+espaces par un esapce unique
-        $button = preg_replace("~[\n\r]+\s*~", ' ', $button);
-
-        // Ok
-        return $button;
+        // Retourne le code html du bouton ("add" si la notice est déjà dans le panier, "remove" sinon)
+        return $this->basket->has($postID) ? $this->buttons['remove'] : $this->buttons['add'];
     }
 
     /**
@@ -310,6 +312,28 @@ class ButtonGenerator
     }
 
     /**
+     * Initialise le code html des boutons add/remove en fonction du settings passés en paramètre.
+     *
+     * Le code html est compressé pour éviter que wordpress ne génère des retours chariots.
+     *
+     * @param ButtonSettings $buttonSettings
+     */
+    private function initButtons(ButtonSettings $buttonSettings)
+    {
+        foreach (['add', 'remove'] as $button) {
+            // Récupère le code html du bouton
+            $html = $this->buttonSettings->$button->getPhpValue();
+
+            // Minifie le code pour contourner wpautop qui nous convertit les retours à la lign en <br>
+            // Source : https://stackoverflow.com/a/6225706
+            $html = preg_replace(['~\>[^\S ]+~s', '~[^\S ]+\<~s', '~\s+~s'], ['>', '<', ' '], $html);
+
+            // Stocke le code html compressé
+            $this->buttons[$button] = $html;
+        }
+    }
+
+    /**
      * Insère la CSS et le JS du panier dans la page en cours.
      */
     private function enqueueAssets()
@@ -320,9 +344,9 @@ class ButtonGenerator
             'docalist-basket',  // Handle du JS
             'docalistBasketSettings', // Nom de la variable javascript générée
             [
-                'active' => $this->buttonSettings->add(),
-                'inactive' => $this->buttonSettings->remove(),
-                'url' => 'xxxxxxxxxxxx', //$this->baseUrl(),
+                'addButton' => $this->buttons['add'],
+                'removeButton' => $this->buttons['remove'],
+                'url' => $this->basketService->getAjaxController()->getBaseUrl(),
             ]
         );
     }
