@@ -9,6 +9,7 @@
  */
 namespace Docalist\Basket\Tests;
 
+use InvalidArgumentException;
 use WP_UnitTestCase;
 use Docalist\Basket\Basket;
 use Docalist\Basket\Storage;
@@ -56,13 +57,15 @@ class BasketTest extends WP_UnitTestCase
      * @param string $class Nom de la classe BasketStorage à utiliser.
      *
      * @dataProvider storageProvider
-     *
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage basketCapacity must be greater than 0
      */
     public function testConstructWithInvalidCapacity(string $class): void
     {
-        new Basket(1, $this->getStorage($class), 0);
+        $storage = $this->getStorage($class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('basketCapacity must be greater than 0');
+
+        new Basket(1, $storage, 0);
     }
 
     /**

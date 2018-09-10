@@ -67,13 +67,15 @@ class BasketsTest extends WP_UnitTestCase
      * @param string $class Nom de la classe BasketStorage à utiliser.
      *
      * @dataProvider storageProvider
-     *
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage maxBaskets must be greater than 0
      */
     public function testConstructWithInvalidMaxBaskets(string $class): void
     {
-        new Baskets($this->getStorage($class), 0, 100);
+        $storage = $this->getStorage($class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('maxBaskets must be greater than 0');
+
+        new Baskets($storage, 0, 100);
     }
 
     /**
@@ -82,13 +84,15 @@ class BasketsTest extends WP_UnitTestCase
      * @param string $class Nom de la classe BasketStorage à utiliser.
      *
      * @dataProvider storageProvider
-     *
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage basketCapacity must be greater than 0
      */
     public function testConstructWithInvalidCapacity(string $class): void
     {
-        new Baskets($this->getStorage($class), 10, 0);
+        $storage = $this->getStorage($class);
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('basketCapacity must be greater than 0');
+
+        new Baskets($storage, 10, 0);
     }
 
     /**
@@ -202,13 +206,14 @@ class BasketsTest extends WP_UnitTestCase
      * @param string $class Nom de la classe BasketStorage à utiliser.
      *
      * @dataProvider storageProvider
-     *
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Basket 0 does not exist
      */
     public function testGetBasketNotFound(string $class): void
     {
         $baskets = new Baskets($this->getStorage($class, 2));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Basket 0 does not exist');
+
         $baskets->getBasket(0);
     }
 
@@ -310,13 +315,14 @@ class BasketsTest extends WP_UnitTestCase
      * @param string $class Nom de la classe BasketStorage à utiliser.
      *
      * @dataProvider storageProvider
-     *
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Basket 4 does not exist
      */
     public function testSetCurentBasketInvalidNumber(string $class): void
     {
         $baskets = new Baskets($this->getStorage($class, 2));
+
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Basket 4 does not exist');
+
         $baskets->setCurrentBasket(4);
     }
 }
