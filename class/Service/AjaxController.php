@@ -11,7 +11,6 @@ namespace Docalist\Basket\Service;
 
 use Docalist\Controller;
 use Docalist\Basket\Service\BasketService;
-use Docalist\Basket\Basket;
 use Docalist\Http\JsonResponse;
 
 /**
