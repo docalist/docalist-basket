@@ -11,6 +11,7 @@ namespace Docalist\Basket\AdminPage;
 
 use Docalist\AdminPage;
 use Docalist\Basket\Settings\BasketSettings;
+use Exception;
 
 /**
  * Page de configuration du module panier.
