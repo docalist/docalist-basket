@@ -167,7 +167,7 @@ class BasketService
         // Seuls les utilisateurs connectés ont un panier
         if (is_user_logged_in()) {
             // Récupère le rôle principal de l'utilisateur (le premier)
-            $user = wp_get_current_user(); /** @var WP_User $user */
+            $user = wp_get_current_user(); /* @var WP_User $user */
             $role = reset($user->roles);
 
             // Teste si ce rôle a le droit d'avoir un panier
