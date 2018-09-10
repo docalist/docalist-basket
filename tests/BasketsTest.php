@@ -38,7 +38,7 @@ class BasketsTest extends WP_UnitTestCase
     private function getStorage(string $class, int $count = 1, int $current = Baskets::DEFAULT): Storage
     {
         $userID = 456; // fake user id
-        $storage = new $class($userID); /** @var Storage $storage */
+        $storage = new $class($userID); /* @var Storage $storage */
         $baskets = new Baskets($storage);
         for ($i = 2; $i <= $count; $i++) {
             $baskets->createBasket();

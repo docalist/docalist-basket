@@ -32,7 +32,7 @@ class BasketTest extends WP_UnitTestCase
     private function getStorage(string $class): Storage
     {
         $userID = 456; // fake user id
-        $storage = new $class($userID); /** @var Storage $storage */
+        $storage = new $class($userID); /* @var Storage $storage */
 
         return $storage;
     }
