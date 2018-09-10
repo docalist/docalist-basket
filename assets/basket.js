@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
     function call(action, refs) {
         var url = settings['url'] + '&m=' + action;
         if (refs) {
-            url += '&refs=' + refs;
+            url += '&postID=' + refs;
         }
         $.getJSON(url, function(response) {
             $(document).trigger('docalist-basket-changed', response);
@@ -54,13 +54,13 @@ jQuery(document).ready(function($) {
         // La notice est sélectionnée
         if (state === true) {
             hentry.removeClass('basket-inactive').addClass('basket-active');
-            $('.basket-add', hentry).replaceWith(settings['active']);
+            $('.basket-add', hentry).replaceWith(settings['removeButton']);
         }
 
         // La notice n'est pas sélectionnée
         else {
             hentry.removeClass('basket-active').addClass('basket-inactive');
-            $('.basket-remove', hentry).replaceWith(settings['inactive']);
+            $('.basket-remove', hentry).replaceWith(settings['addButton']);
         }
     }
 
@@ -160,7 +160,7 @@ jQuery(document).ready(function($) {
         // Si on a vidé le panier, désélectionne tout
         if (response && response.action === 'clear') {
             $('.basket-active').removeClass('basket-active').addClass('basket-inactive');
-            $('.basket-remove').replaceWith(settings['inactive']);
+            $('.basket-remove').replaceWith(settings['addButton']);
         }
 
     });
