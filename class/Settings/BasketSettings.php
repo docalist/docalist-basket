@@ -14,15 +14,18 @@ use Docalist\Basket\Settings\BasketPostType;
 use Docalist\Basket\Settings\LimitsByRole;
 use Docalist\Basket\Settings\ButtonSettings;
 use Docalist\Type\WordPressPage;
+use Docalist\Type\Text;
 
 /**
  * Paramètres du module panier.
  *
- * @property LimitsByRole[]     $role       Rôles utilisateurs autorisés et limites associées.
- * @property BasketPostType[]   $types      Post types autorisés.
- * @property ButtonSettings     $single     Paramètres du bouton panier pour une notice seule.
- * @property ButtonSettings     $list       Paramètres du bouton panier dans une liste de notices.
- * @property WordPressPage      $basketpage ID de la page WordPress permettant d'afficher le panier.
+ * @property LimitsByRole[]     $role           Rôles utilisateurs autorisés et limites associées.
+ * @property BasketPostType[]   $types          Post types autorisés.
+ * @property ButtonSettings     $single         Paramètres du bouton panier pour une notice seule.
+ * @property ButtonSettings     $list           Paramètres du bouton panier dans une liste de notices.
+ * @property WordPressPage      $basketpage     ID de la page WordPress permettant d'afficher le panier.
+ * @property Text               $classinactive  Classe CSS des notices sélectionnables.
+ * @property Text               $classactive    Classe CSS des notices sélectionnées.
  *
  * @author Daniel Ménard <daniel.menard@laposte.net>
  */
@@ -86,6 +89,32 @@ class BasketSettings extends Settings
                         'docalist-basket'
                     ),
                     'default' => 0,
+                ],
+
+                'classinactive' => [
+                    'type' => Text::class,
+                    'label' => __('Classe CSS des notices sélectionnables', 'docalist-basket'),
+                    'description' => __(
+                        'Nom de la classe CSS qui sera ajoutée aux notices qui peuvent être ajoutées au panier
+                        (<code>basket-inactive</code> par défaut).',
+                        'docalist-basket'
+                    ),
+                    'default' => 'basket-inactive',
+                ],
+
+                'classactive' => [
+                    'type' => Text::class,
+                    'label' => __('Classe CSS des notices sélectionnées', 'docalist-basket'),
+                    'description' => __(
+                        'Nom de la classe CSS qui sera ajoutée aux notices sélectionnées.
+                        (<code>basket-active</code> par défaut).<br />
+                        Pour que les notices sélectionnées soient mises en surbrillance, votre thème doit appliquer
+                        un style particulier à cette classe CSS. Si vous ne pouvez pas modifier votre thème, utilisez
+                        le customizer WordPress pour ajouter du code CSS additionnel. Par exemple :
+                        <code>.basket-active {background-color: yellow; transition: background-color 1s;}</code>',
+                        'docalist-basket'
+                    ),
+                    'default' => 'basket-active',
                 ],
             ],
         ];
