@@ -90,7 +90,7 @@ class ButtonGenerator
      *
      * @param WP_Query $query
      */
-    public function onLoopStart(WP_Query $query)
+    public function onLoopStart(WP_Query $query): void
     {
         // On ne fait rien si on n'est pas dans la boucle WordPress principale
         if (! $query->is_main_query()) {
@@ -105,6 +105,7 @@ class ButtonGenerator
             return;
         }
 
+        // Initialise le code html des boutons
         $this->initButtons($this->buttonSettings);
 
         // Installe les filtres requis en fonction de l'emplacement du bouton
@@ -149,7 +150,7 @@ class ButtonGenerator
      *
      * @param WP_Query $query
      */
-    public function onLoopEnd(WP_Query $query)
+    public function onLoopEnd(WP_Query $query): void
     {
         // Supprime les filtres installés pour générer le bouton
         switch ($this->buttonSettings->location->getPhpValue()) {
@@ -206,8 +207,11 @@ class ButtonGenerator
         $this->count++;
 
         //  Ajoute les classes CSS
-        $classes[] = 'basket';
-        $classes[] = $this->basket->has($postID) ? 'basket-active' : 'basket-inactive';
+        $settings = $this->basketService->getSettings();
+        $setting = $this->basket->has($postID) ? $settings->classactive : $settings->classinactive;
+        array_unshift($classes, $setting->getPhpValue());
+
+        /* Remarque : on ajoute la classe en premier pour qu'elle soit prioritaire sur les autres */
 
         // Ok
         return $classes;
@@ -318,7 +322,7 @@ class ButtonGenerator
      *
      * @param ButtonSettings $buttonSettings
      */
-    private function initButtons(ButtonSettings $buttonSettings)
+    private function initButtons(ButtonSettings $buttonSettings): void
     {
         foreach (['add', 'remove'] as $button) {
             // Récupère le code html du bouton
@@ -336,17 +340,29 @@ class ButtonGenerator
     /**
      * Insère la CSS et le JS du panier dans la page en cours.
      */
-    private function enqueueAssets()
+    private function enqueueAssets(): void
     {
-        wp_enqueue_style('docalist-basket');
+        $settings = $this->basketService->getSettings();
+
         wp_enqueue_script('docalist-basket');
         wp_localize_script(
             'docalist-basket',  // Handle du JS
             'docalistBasketSettings', // Nom de la variable javascript générée
             [
-                'addButton' => $this->buttons['add'],
-                'removeButton' => $this->buttons['remove'],
+                // URL du controleur ajax
                 'url' => $this->basketService->getAjaxController()->getBaseUrl(),
+
+                // Code HTML du bouton "Ajouter au panier"
+                'addButton' => $this->buttons['add'],
+
+                // Code HTML du bouton "Enlever du panier"
+                'removeButton' => $this->buttons['remove'],
+
+                // Classe CSS d'une notice sélectionnée
+                'basket-active' => $settings->classactive->getPhpValue(),
+
+                // Classe CSS d'une notice non sélectionnée
+                'basket-inactive' => $settings->classinactive->getPhpValue(),
             ]
         );
     }
