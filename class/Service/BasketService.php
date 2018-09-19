@@ -15,6 +15,12 @@ use Docalist\Basket\Service\AjaxController;
 use Docalist\Basket\Service\ButtonGenerator;
 use Docalist\Basket\Settings\BasketSettings;
 use Docalist\Basket\Storage\UserMetaBasketStorage;
+use Docalist\Search\QueryDSL;
+use Docalist\Search\SearchEngine;
+use Docalist\Search\SearchRequest;
+use Docalist\Search\SearchUrl;
+use WP_Post;
+use WP_Query;
 use WP_User;
 
 /**
@@ -71,6 +77,15 @@ class BasketService
 
         // Crée le générateur de bouton
         $this->buttonGenerator = new ButtonGenerator($this);
+
+        // Crée le pseudo type "in:basket"
+        $this->createBasketPseudoType();
+
+        // Gère la page "panier" indiquée dans les paramètres
+        $this->handleBasketPage();
+
+        // Affiche la mention "Page du panier docalist" dans la liste des pages du back office WordPress
+        $this->showStateForBasketPage();
     }
 
     /**
@@ -208,5 +223,123 @@ class BasketService
     public function isSupportedType(string $type): bool
     {
         return isset($this->settings->types[$type]);
+    }
+
+    /**
+     * Retourne l'url de la page permettant d'afficher le contenu du panier.
+     *
+     * Si l'utilisateur a indiqué une page WordPress spécifique dans les paramètres du panier, c'est l'url de cette
+     * page qui est retournée.
+     *
+     * Sinon, c'est l'url de la page "résultats de recherche" qui est utilisée, avec un paramètre "?in=basket".
+     *
+     * @return string
+     */
+    public function getUrl(): string
+    {
+        // Retourne la page indiquée dans les paramètres du panier
+        $page = $this->settings->basketpage->getPhpValue();
+        if ($page) {
+            return get_the_permalink($page);
+        }
+
+        // Retourne l'url d'une recherche "in:basket"
+        $docalistSearch = docalist('docalist-search-engine'); /* @var SearchEngine $docalistSearch */
+        return $docalistSearch->searchPageUrl() . '?in=basket';
+    }
+
+    /**
+     * Teste si on est sur une page qui affiche le contenu du panier.
+     *
+     * La méthode teste si la requête docalist-search en cours porte sur le pseudo type "basket".
+     *
+     * @return bool
+     */
+    public function isBasketRequest(): bool
+    {
+        $docalistSearch = docalist('docalist-search-engine'); /* @var SearchEngine $docalistSearch */
+        $request = $docalistSearch->getSearchRequest();
+
+        return !is_null($request) && in_array('basket', $request->getTypes(), true);
+    }
+
+    /**
+     * Permet de lancer des recherches docalist-search de la forme "in:basket".
+     *
+     * Quand docalist-search rencontre une clause "in" avec un type qu'il ne connaît pas, il déclenche le filtre
+     * "docalist_search_type_query". On intercepte ce filtre pour générer une requête elasticsearch qui porte sur
+     * tous les documents présents dans le panier. Si l'utilisateur en cours n'a pas de panier ou si son panier
+     * est vide, on génère une requête qui ne retourne aucun résultat (équivalent matchNone).
+     */
+    private function createBasketPseudoType(): void
+    {
+        add_filter(
+            'docalist_search_type_query',
+            function (array $filter, string $type): array {
+                if ($type !== 'basket') {
+                    return $filter;
+                }
+
+                // Récupère les ID des notices qui figurent dans le panier
+                $basket = $this->getBasket();
+                $ids = is_null($basket) ? [] : $basket->getContents();
+
+                // Génère le filtre
+                $dsl = docalist('elasticsearch-query-dsl'); /* @var QueryDSL $dsl */
+                return $dsl->ids($ids);
+            },
+            10,
+            2
+        );
+    }
+
+    /**
+     * Génère une requête docalist-search "in:basket" quand on est sur la page panier indiquée dans les paramètres.
+     */
+    private function handleBasketPage(): void
+    {
+        // On ne fait rien si on n'a pas de page spécifique pour le panier
+        $page = $this->settings->basketpage->getPhpValue();
+        if (empty($page)) {
+            return;
+        }
+
+        // Génère une requête quand on est sur la page panier
+        add_filter(
+            'docalist_search_create_request',
+            function (SearchRequest $request = null, WP_Query $query) use ($page): ?SearchRequest {
+                // On ne fait rien si on n'est pas sur la page du panier
+                if ($query->get_queried_object_id() !== $page) {
+                    return $request;
+                }
+
+                // Génère une requête "in:basket"
+                return (new SearchUrl($this->getUrl(), ['basket']))->getSearchRequest();
+            },
+            10,
+            2
+        );
+    }
+
+    /**
+     * Affiche la mention "Page du panier docalist" dans la liste des pages du back office WordPress.
+     *
+     * Ne fait rien si aucune page n'a été indiquée dans les paramètres du panier.
+     */
+    private function showStateForBasketPage(): void
+    {
+        // Teste si une page spécifique a été choisie pour la panier
+        $page = $this->settings->basketpage->getPhpValue();
+        if (empty($page)) {
+            return;
+        }
+
+        add_filter('display_post_states', function (array $states, WP_Post $post) use ($page): array {
+            if ($post->ID === $page) {
+                $states['docalist-basket'] = __('Page du panier Docalist', 'docalist-basket');
+            }
+
+            return $states;
+        }, 10, 2);
     }
 }
