@@ -53,13 +53,13 @@ jQuery(document).ready(function($) {
 
         // La notice est sélectionnée
         if (state === true) {
-            hentry.removeClass('basket-inactive').addClass('basket-active');
+            hentry.removeClass(settings['basket-inactive']).addClass(settings['basket-active']);
             $('.basket-add', hentry).replaceWith(settings['removeButton']);
         }
 
         // La notice n'est pas sélectionnée
         else {
-            hentry.removeClass('basket-active').addClass('basket-inactive');
+            hentry.removeClass(settings['basket-active']).addClass(settings['basket-inactive']);
             $('.basket-remove', hentry).replaceWith(settings['addButton']);
         }
     }
@@ -159,7 +159,9 @@ jQuery(document).ready(function($) {
 
         // Si on a vidé le panier, désélectionne tout
         if (response && response.action === 'clear') {
-            $('.basket-active').removeClass('basket-active').addClass('basket-inactive');
+            $('.' + settings['basket-active'])
+                .removeClass(settings['basket-active'])
+                .addClass(settings['basket-inactive']);
             $('.basket-remove').replaceWith(settings['addButton']);
         }
 
