@@ -26,7 +26,7 @@ class BasketPostType extends ListEntry
     protected function getEntries()
     {
         $list = [];
-        foreach(docalist('docalist-data')->databases() as $name => $database) {
+        foreach (docalist('docalist-data')->databases() as $name => $database) {
             $list[$name] = $database->label();
         }
 
