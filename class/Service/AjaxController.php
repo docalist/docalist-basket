@@ -54,10 +54,10 @@ class AjaxController extends Controller
         parent::__construct('docalist-basket', 'admin-ajax.php');
     }
 
-    protected function register()
+    protected function register(): void
     {
         if ($this->canRun()) {
-            $callback = function () {
+            $callback = function (): void {
                 $this->run()->send();
                 exit();
             };
@@ -66,7 +66,7 @@ class AjaxController extends Controller
         }
     }
 
-    protected function getDefaultAction()
+    protected function getDefaultAction(): string
     {
         return 'Dump';
     }
@@ -166,7 +166,7 @@ class AjaxController extends Controller
      *
      * Si l'utilisateur en cours n'a pas les droits suffisants, la méthode retourne une erreur 403 forbidden.
      */
-    public function actionClear()
+    public function actionClear(): JsonResponse
     {
         // Récupère le panier de l'utilisateur, génère une erreur s'il n'a pas les droits suffisants
         if (is_null($basket = $this->basketService->getBasket())) {
@@ -188,9 +188,21 @@ class AjaxController extends Controller
     /**
      * Affiche le contenu du panier.
      *
-     * @return JsonResponse
+     * @return JsonResponse Retourne une réponse JSON de la forme suivante :
+     *
+     * <code>
+     * status: 200 OK
+     * {
+     *     "action": "dump",        // L'opération exécutée
+     *     "result": [10,20,30],    // Les ID des notices du panier
+     *     "count": 3,              // Le nombre de notices dans le panier
+     *     "full": false            // Indique si le panier est plein
+     * }
+     * </code>
+     *
+     * Si l'utilisateur en cours n'a pas les droits suffisants, la méthode retourne une erreur 403 forbidden.
      */
-    public function actionDump()
+    public function actionDump(): JsonResponse
     {
         // Récupère le panier de l'utilisateur, génère une erreur s'il n'a pas les droits suffisants
         if (is_null($basket = $this->basketService->getBasket())) {
@@ -229,7 +241,12 @@ class AjaxController extends Controller
     /**
      * Génère une réponse JSON "Accès non autorisé".
      *
-     * @return JsonResponse
+     * @return JsonResponse Retourne une réponse JSON de la forme suivante :
+     *
+     * <code>
+     * status: 403 Forbidden
+     * "Accès non autorisé"
+     * </code>
      */
     private function forbidden(): JsonResponse
     {
