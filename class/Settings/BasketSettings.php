@@ -40,7 +40,8 @@ class BasketSettings extends Settings
                     'description' => __(
                         'Choisissez les utilisateurs qui auront un panier en choisissant, pour chaque rôle WordPress
                         le nombre maximum de paniers autorisés et le nombre maximum de notices que chaque panier peut
-                        contenir',
+                        contenir.<br/><b>Remarque</b> : pour le moment, l\'interface du widget panier ne permet de
+                        gérer qu\'un seul panier.',
                         'docalist-basket'
                     ),
                 ],
