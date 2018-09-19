@@ -15,5 +15,4 @@ add_action('init', function () {
     $url = DOCALIST_BASKET_URL . '/assets/';
 
     wp_register_script('docalist-basket', $url . 'basket.js', ['jquery-core'], '180625', true);
-    wp_register_style('docalist-basket', $url . 'basket.css', [], '180625');
 });
