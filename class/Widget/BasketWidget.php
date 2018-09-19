@@ -11,6 +11,7 @@ namespace Docalist\Basket\Widget;
 
 use WP_Widget;
 use Docalist\Forms\Container;
+use Docalist\Basket\Service\BasketService;
 
 /**
  * Widget panier docalist.
@@ -23,16 +24,14 @@ class BasketWidget extends WP_Widget
     {
         $id = 'docalist-basket';
         parent::__construct(
-            // Base ID. Inutile de préfixer avec "widget", WordPress le fait
             $id,
-
-            // Titre (nom) du widget affiché en back office
             __('Panier Docalist', 'docalist-basket'),
-
-            // Args
             [
                 'description' => __('Panier Docalist', 'docalist-basket'),
                 'classname' => $id, // par défaut, WordPress met 'widget_'.$id
+            ],
+            [
+                'width' => 500, // On ne tient pas dans la largeur standard du customizer (250)
             ]
         );
     }
@@ -57,8 +56,12 @@ class BasketWidget extends WP_Widget
      */
     public function widget($context, $settings)
     {
-        // Seuls les utilisateurs loggués peuvent avoir un panier
-        if (! is_user_logged_in()) {
+        // Charge le panier
+        $service = docalist('basket'); /* @var BasketService $service */
+        $basket = $service->getBasket();
+
+        // On n'affiche rien si l'utilisateur en cours n'a pas de panier
+        if (is_null($basket)) {
             return;
         }
 
@@ -69,8 +72,6 @@ class BasketWidget extends WP_Widget
         // et dès lors on a les settings.
         $settings += $this->defaultSettings();
 
-        // Charge le panier
-        $basket = docalist('user-data')->basket(); /** @var Basket $basket */
         $count = $basket->count();
 
         // Début du widget
@@ -87,22 +88,23 @@ class BasketWidget extends WP_Widget
         $link = '<li class="%s" style="%s" title="%s"><a href="%s">%s</a></li>';
         echo '<ul>';
 
-        // Détermine l'url de la page "afficher le panier
-        $isBasketPage = docalist('basket-controller')->isBasketPage();
-
-        // Lien "Afficher le panier"
-        $label = strtr($settings['show'], ['%d' => '<span class="basket-count">' . $count . '</span>']);
-        $label && printf($link,
-            'basket-show',
-            ($count && !$isBasketPage) ? '' : 'display:none',
-            __('Affiche les notices sélectionnées.', 'docalist-basket'),
-            esc_url(docalist('basket-controller')->basketPageUrl()),
-            $label
-        );
+        // Lien "Afficher le panier" (pas affiché si on est déjà sur la page du panier)
+        if (!$service->isBasketRequest()) {
+            $label = strtr($settings['show'], ['%d' => '<span class="basket-count">' . $count . '</span>']);
+            $label && printf(
+                $link,
+                'basket-show',
+                $count ? '' : 'display:none',
+                __('Affiche les notices sélectionnées.', 'docalist-basket'),
+                esc_url($service->getUrl()),
+                $label
+            );
+        }
 
         // Lien "Ajouter les notices de la page'
         $label = strtr($settings['addpage'], ['%d' => '<span class="basket-addpage-count"></span>']);
-        $label && printf($link,
+        $label && printf(
+            $link,
             'basket-addpage',
             'display:none',
             __('Ajoute à la sélection toutes les notices de la page en cours qui ne sont pas encore sélectionnées.', 'docalist-basket'),
@@ -112,7 +114,8 @@ class BasketWidget extends WP_Widget
 
         // Lien "Supprimer les notices de la page'
         $label = strtr($settings['removepage'], ['%d' => '<span class="basket-removepage-count"></span>']);
-        $label && printf($link,
+        $label && printf(
+            $link,
             'basket-removepage',
             'display:none',
             __('Enlève de la sélection toutes les notices de la page en cours qui sont actuellement sélectionnées.', 'docalist-basket'),
@@ -123,7 +126,8 @@ class BasketWidget extends WP_Widget
 
         // Lien "Vider le panier"
         $label = strtr($settings['clear'], ['%d' => '<span class="basket-count">' . $count . '</span>']);
-        $label && printf($link,
+        $label && printf(
+            $link,
             'basket-clear',
             $count ? '' : 'display:none',
             __('Vide la sélection et enlève toutes les notices actuellement sélectionnées.', 'docalist-basket'),
@@ -141,7 +145,7 @@ class BasketWidget extends WP_Widget
     /**
      * Crée le formulaire permettant de paramètrer le widget.
      *
-     * @return Fragment
+     * @return Container
      */
     protected function settingsForm()
     {
