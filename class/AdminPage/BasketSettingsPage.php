@@ -73,6 +73,8 @@ class BasketSettingsPage extends AdminPage
                 $this->settings->single = $_POST['single'];
                 $this->settings->list = $_POST['list'];
                 $this->settings->basketpage = (int) $_POST['basketpage'];
+                $this->settings->classinactive = $_POST['classinactive'];
+                $this->settings->classactive = $_POST['classactive'];
 
                 // $settings->validate();
                 $this->settings->save();
