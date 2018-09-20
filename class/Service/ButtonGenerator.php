@@ -147,10 +147,8 @@ class ButtonGenerator
 
     /**
      * Fin de la boucle WordPress.
-     *
-     * @param WP_Query $query
      */
-    public function onLoopEnd(WP_Query $query): void
+    public function onLoopEnd(): void
     {
         // Supprime les filtres installés pour générer le bouton
         switch ($this->buttonSettings->location->getPhpValue()) {
