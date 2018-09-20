@@ -106,7 +106,7 @@ class ButtonGenerator
         }
 
         // Initialise le code html des boutons
-        $this->initButtons($this->buttonSettings);
+        $this->initButtons();
 
         // Installe les filtres requis en fonction de l'emplacement du bouton
         switch ($this->buttonSettings->location->getPhpValue()) {
@@ -317,10 +317,8 @@ class ButtonGenerator
      * Initialise le code html des boutons add/remove en fonction du settings passés en paramètre.
      *
      * Le code html est compressé pour éviter que wordpress ne génère des retours chariots.
-     *
-     * @param ButtonSettings $buttonSettings
      */
-    private function initButtons(ButtonSettings $buttonSettings): void
+    private function initButtons(): void
     {
         foreach (['add', 'remove'] as $button) {
             // Récupère le code html du bouton
