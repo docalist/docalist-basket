@@ -14,5 +14,5 @@ namespace Docalist\Basket;
 add_action('init', function () {
     $url = DOCALIST_BASKET_URL . '/assets/';
 
-    wp_register_script('docalist-basket', $url . 'basket.js', ['jquery-core'], '180625', true);
+    wp_register_script('docalist-basket', $url . 'basket.js', ['jquery-core'], '180931', true);
 });
