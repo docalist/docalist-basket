@@ -1,41 +1,43 @@
 {
-	"type": "wordpress-plugin",
-	"name": "docalist/docalist-basket",
-	"description": "Docalist : panier de notices.",
-    "homepage": "http://docalist.org/",
-	"license": "GPL-2.0",
-
-	"authors": [ 
-        {
-            "name": "Daniel Menard",
-            "email": "daniel.menard@laposte.net",
-            "homepage": "http://docalist.org/"
-        }
-    ],
-
-	"keywords": [
+	"type" : "wordpress-plugin",
+	"name" : "docalist/docalist-basket",
+	"description" : "Docalist : panier de notices.",
+	"homepage" : "https://docalist.org/",
+	"license" : "GPL-2.0",
+	"authors" : [{
+			"name" : "Daniel Menard",
+			"email" : "daniel.menard@laposte.net",
+			"homepage" : "http://docalist.org/"
+		}
+	],
+	"keywords" : [
 		"docalist"
 	],
-    
-    "support": {
-        "issues": "https://github.com/docalist/docalist/issues",
-        "forum": "https://groups.google.com/forum/#!forum/docalist-discuss"
-    },
-    
-	"require": {
-		"composer/installers": "~1.0",
-		"php": ">=7.2"
+	"support" : {
+		"issues" : "https://github.com/docalist/docalist/issues",
+		"forum" : "https://groups.google.com/forum/#!forum/docalist-discuss"
 	},
-
-    "autoload": {
-        "psr-4": {"Docalist\\Basket\\": "class"}
-    },
-    "autoload-dev": {
-        "psr-4": {"Docalist\\Basket\\Tests\\": "tests"}
-    },
-
-    "config": {
-        "optimize-autoloader": true,
-        "classmap-authoritative": true
-    }
+	"require" : {
+		"composer/installers" : "~1.0",
+		"php" : ">=7.2"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Docalist\\Basket\\" : "class"
+		}
+	},
+	"autoload-dev" : {
+		"psr-4" : {
+			"Docalist\\Basket\\Tests\\" : "tests"
+		}
+	},
+	"config" : {
+		"optimize-autoloader" : true,
+		"classmap-authoritative" : true
+	},
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "0.x-dev"
+		}
+	}
 }
