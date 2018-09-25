@@ -3,11 +3,11 @@
 	"name" : "docalist/docalist-basket",
 	"description" : "Docalist : panier de notices.",
 	"homepage" : "https://docalist.org/",
-	"license" : "GPL-2.0",
+	"license" : "GPL-2.0-or-later",
 	"authors" : [{
 			"name" : "Daniel Menard",
 			"email" : "daniel.menard@laposte.net",
-			"homepage" : "http://docalist.org/"
+			"homepage" : "https://docalist.org/"
 		}
 	],
 	"keywords" : [
@@ -32,6 +32,7 @@
 		}
 	},
 	"config" : {
+        "sort-packages" : true,
 		"optimize-autoloader" : true,
 		"classmap-authoritative" : true
 	},
