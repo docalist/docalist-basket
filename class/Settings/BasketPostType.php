@@ -35,6 +35,6 @@ class BasketPostType extends ListEntry
 
     public function getDefaultEditor()
     {
-        return 'list';
+        return 'entry-picker';
     }
 }
