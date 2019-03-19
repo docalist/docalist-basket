@@ -83,7 +83,7 @@ class ButtonLocation extends ListEntry
         ];
     }
 
-    public function getDefaultEditor()
+    public function getDefaultEditor(): string
     {
         return 'select';
     }
