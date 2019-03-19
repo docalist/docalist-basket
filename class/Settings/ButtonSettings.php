@@ -27,7 +27,7 @@ use Docalist\Basket\Settings\ButtonLocation;
  */
 class ButtonSettings extends Composite
 {
-    public static function loadSchema()
+    public static function loadSchema(): array
     {
         return [
             'fields' => [

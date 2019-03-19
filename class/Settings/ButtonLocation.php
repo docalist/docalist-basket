@@ -53,7 +53,7 @@ class ButtonLocation extends ListEntry
      */
     const AFTER_CONTENT = 'after-content';
 
-    public static function loadSchema()
+    public static function loadSchema(): array
     {
         return [
             'label' => __('Position du bouton', 'docalist-basket'),

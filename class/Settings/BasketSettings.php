@@ -33,7 +33,7 @@ class BasketSettings extends Settings
 {
     protected $id = 'docalist-basket';
 
-    public static function loadSchema()
+    public static function loadSchema(): array
     {
         return [
             'fields' => [

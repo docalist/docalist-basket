@@ -24,7 +24,7 @@ use Docalist\Type\Integer;
  */
 class LimitsByRole extends Composite
 {
-    public static function loadSchema()
+    public static function loadSchema(): array
     {
         return [
             'repeatable' => true,
