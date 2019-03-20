@@ -72,7 +72,7 @@ class ButtonLocation extends ListEntry
      *
      * @return string[] Un tableau de la forme constante d'emplacement => libellé.
      */
-    protected function getEntries()
+    protected function getEntries(): array
     {
         return [
             self::BEFORE_TITLE    => __('Avant le titre', 'docalist-basket'),

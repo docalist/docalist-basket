@@ -23,7 +23,7 @@ class BasketPostType extends ListEntry
      *
      * @return string[] Un tableau de la forme post_type => libellé.
      */
-    protected function getEntries()
+    protected function getEntries(): array
     {
         $list = [];
         foreach (docalist('docalist-data')->databases() as $name => $database) {
