@@ -34,6 +34,7 @@ use Docalist\Forms\Form;
         $form->addItems($this->settings->getEditorForm()->getItems());
         $form->submit(__('Enregistrer les modifications', 'docalist-basket'))
             ->addClass('button button-primary');
-        $form->bind($settings)->display('wordpress');
+        $form->bind($settings);
+        $form->display('wordpress');
     ?>
 </div>
