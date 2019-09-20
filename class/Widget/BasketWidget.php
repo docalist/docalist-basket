@@ -243,7 +243,9 @@ class BasketWidget extends WP_Widget
      */
     public function update($new, $old)
     {
-        $settings = $this->settingsForm()->bind($new)->getData();
+        $form = $this->settingsForm();
+        $form->bind($new);
+        $settings = $form->getData();
 
         // TODO validation
 
