@@ -10,6 +10,7 @@
 namespace Docalist\Basket\Settings;
 
 use Docalist\Type\ListEntry;
+use Docalist\Data\Plugin as DocalistData;
 
 /**
  * Un type de contenu qui peut être ajouté au panier.
@@ -26,8 +27,9 @@ class BasketPostType extends ListEntry
     protected function getEntries(): array
     {
         $list = [];
-        foreach (docalist('docalist-data')->databases() as $name => $database) {
-            $list[$name] = $database->label();
+        $docalistData = docalist('docalist-data'); /** @var DocalistData $docalistData */
+        foreach ($docalistData->databases() as $name => $database) {
+            $list[$name] = $database->getLabel();
         }
 
         return $list;
