@@ -245,7 +245,7 @@ class BasketService
 
         // Retourne l'url d'une recherche "in:basket"
         $docalistSearch = docalist('docalist-search-engine'); /** @var SearchEngine $docalistSearch */
-        return $docalistSearch->searchPageUrl() . '?in=basket';
+        return $docalistSearch->getSearchPageUrl() . '?in=basket';
     }
 
     /**
