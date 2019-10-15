@@ -182,7 +182,7 @@ class BasketService
         // Seuls les utilisateurs connectés ont un panier
         if (is_user_logged_in()) {
             // Récupère le rôle principal de l'utilisateur (le premier)
-            $user = wp_get_current_user(); /* @var WP_User $user */
+            $user = wp_get_current_user(); /** @var WP_User $user */
             $role = reset($user->roles);
 
             // Teste si ce rôle a le droit d'avoir un panier
@@ -244,7 +244,7 @@ class BasketService
         }
 
         // Retourne l'url d'une recherche "in:basket"
-        $docalistSearch = docalist('docalist-search-engine'); /* @var SearchEngine $docalistSearch */
+        $docalistSearch = docalist('docalist-search-engine'); /** @var SearchEngine $docalistSearch */
         return $docalistSearch->searchPageUrl() . '?in=basket';
     }
 
@@ -257,7 +257,7 @@ class BasketService
      */
     public function isBasketRequest(): bool
     {
-        $docalistSearch = docalist('docalist-search-engine'); /* @var SearchEngine $docalistSearch */
+        $docalistSearch = docalist('docalist-search-engine'); /** @var SearchEngine $docalistSearch */
         $request = $docalistSearch->getSearchRequest();
 
         return !is_null($request) && in_array('basket', $request->getTypes(), true);
@@ -285,7 +285,7 @@ class BasketService
                 $ids = is_null($basket) ? [] : $basket->getContents();
 
                 // Génère le filtre
-                $dsl = docalist('elasticsearch-query-dsl'); /* @var QueryDSL $dsl */
+                $dsl = docalist('elasticsearch-query-dsl'); /** @var QueryDSL $dsl */
                 return $dsl->ids($ids);
             },
             10,
