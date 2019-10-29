@@ -179,22 +179,38 @@ class BasketService
         // Par défaut, personne n'a de panier
         $this->baskets = null;
 
-        // Seuls les utilisateurs connectés ont un panier
-        if (is_user_logged_in()) {
-            // Récupère le rôle principal de l'utilisateur (le premier)
-            $user = wp_get_current_user(); /** @var WP_User $user */
-            $role = reset($user->roles);
+        // Seuls les utilisateurs connectés peuvent avoir des paniers
+        if (!is_user_logged_in()) {
+            return null;
+        }
 
-            // Teste si ce rôle a le droit d'avoir un panier
-            if (isset($this->settings->role[$role])) {
-                $limits = $this->settings->role[$role];
-                $maxBaskets = $limits->maxBaskets->getPhpValue();
-                $basketCapacity = $limits->basketCapacity->getPhpValue();
-                if ($maxBaskets > 0 && $basketCapacity > 0) {
-                    $storage = new UserMetaBasketStorage($user->ID);
-                    $this->baskets = new Baskets($storage, $maxBaskets, $basketCapacity);
-                }
+        // Récupère les rôles de l'utilisateur en cours
+        $user = wp_get_current_user(); /** @var WP_User $user */
+        $roles = $user->roles;
+
+        // Teste si l'un des rôles lui permet d'avoir un panier
+        $maxBaskets = $basketCapacity = 0;
+        foreach ($roles as $role) {
+            // Si ce rôle ne permet pas d'avoir un panier terminé
+            if (! isset($this->settings->role[$role])) {
+                continue;
             }
+
+            // Récupère les limites permises pour ce rôle
+            $limits = $this->settings->role[$role];
+            $roleBaskets = $limits->maxBaskets->getPhpValue();
+            $roleCapacity = $limits->basketCapacity->getPhpValue();
+
+            // On fusionne les limites en prenant le max : si on a role1=5x10 et role2=3x100, au final
+            // l'utilisateur aura le droit à 5 paniers de 100
+            ($roleBaskets > $maxBaskets) && $maxBaskets = $roleBaskets;
+            ($roleCapacity > $basketCapacity) && $basketCapacity = $roleCapacity;
+        }
+
+        // Si l'utilisateur a le droit d'avoir des paniers, on les crée
+        if ($maxBaskets > 0 && $basketCapacity > 0) {
+            $storage = new UserMetaBasketStorage($user->ID);
+            $this->baskets = new Baskets($storage, $maxBaskets, $basketCapacity);
         }
 
         return $this->baskets;
