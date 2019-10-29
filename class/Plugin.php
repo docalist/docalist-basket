@@ -31,7 +31,7 @@ class Plugin
         $settings = new BasketSettings(docalist('settings-repository'));
 
         // Crée le service docalist('basket')
-        docalist('services')->add('basket', new BasketService($settings));
+        !is_admin() && docalist('services')->add('basket', new BasketService($settings));
 
         // Ajoute notre répertoire "views" au service "docalist-views"
         add_filter('docalist_service_views', function (Views $views) {
