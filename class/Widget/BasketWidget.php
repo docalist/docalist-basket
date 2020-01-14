@@ -109,7 +109,11 @@ class BasketWidget extends WP_Widget
             $link,
             'basket-addpage',
             'display:none',
-            __('Ajoute à la sélection toutes les notices de la page en cours qui ne sont pas encore sélectionnées.', 'docalist-basket'),
+            __(
+                'Ajoute à la sélection toutes les notices de la page en cours
+                qui ne sont pas encore sélectionnées.',
+                'docalist-basket'
+            ),
             '#',
             $label
         );
@@ -120,7 +124,11 @@ class BasketWidget extends WP_Widget
             $link,
             'basket-removepage',
             'display:none',
-            __('Enlève de la sélection toutes les notices de la page en cours qui sont actuellement sélectionnées.', 'docalist-basket'),
+            __(
+                'Enlève de la sélection toutes les notices de la page en cours
+                qui sont actuellement sélectionnées.',
+                'docalist-basket'
+            ),
             '#',
             $label
         );
@@ -157,15 +165,19 @@ class BasketWidget extends WP_Widget
             ->addClass('dashicons dashicons-editor-help alignright')
             ->setAttribute('onclick', 'jQuery(".basket-help").toggle("slow");return false;');
 
-        $help = __('
-            Les zones suivantes vous permettent de paramétrer le titre et les libellés des liens affichés dans le widget panier.
-            Vous pouvez utiliser <code>%d</code> pour indiquer le nombre de notices ajoutées/supprimées/présentes dans la sélection.
-            Pour les liens, si vous n\'indiquez aucun libellé, le lien correspondant ne sera pas affiché dans le widget.
-            ', 'docalist-basket');
+        $help = __(
+            'Les zones suivantes vous permettent de paramétrer le titre et les libellés des liens
+            affichés dans le widget panier. Vous pouvez utiliser <code>%d</code> pour indiquer le
+            nombre de notices ajoutées/supprimées/présentes dans la sélection.
+            Pour les liens, si vous n\'indiquez aucun libellé, le lien correspondant ne sera pas
+            affiché dans le widget.',
+            'docalist-basket'
+        );
         $form->tag('p.basket-help', $help)->setAttribute('style', 'display: none');
 
         $form->input('title')
-            ->setAttribute('id', $this->get_field_id('title')) // pour que le widget affiche le bon titre en backoffice. cf widgets.dev.js, fonction appendTitle(), L250
+            // pour que le widget affiche le bon titre en backoffice. cf widgets.dev.js, fonction appendTitle(), L250
+            ->setAttribute('id', $this->get_field_id('title'))
             ->setLabel(__('<b>Titre du widget</b>', 'docalist-basket'))
             ->addClass('widefat');
 
