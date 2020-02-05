@@ -116,7 +116,6 @@ class ButtonGenerator
          */
         add_action('loop_start', function (WP_Query $query): void {
             $this->stack[] = $query->is_main_query();
-            $this->log($query, '>>> start loop');
 
             if (! $this->isMainQuery()) {
                 return;
@@ -141,8 +140,6 @@ class ButtonGenerator
          * si c'est la boucle principale qui vient de se terminer.
          */
         add_action('loop_end', function (WP_Query $query): void {
-            $this->log($query, '<<< end loop');
-
             if (! $this->isMainQuery()) {
                 return;
             }
@@ -409,20 +406,20 @@ class ButtonGenerator
         );
     }
 
-    private function log(WP_Query $query, string $title): void
-    {
-        $message = sprintf(
-            "%s, query=%d, stack=%s, main=%s, query=\n%s",
-            $title,
-            spl_object_id($query),
-            json_encode($this->stack),
-            var_export($this->isMainQuery(), true),
-            $query->request
-        );
+//     private function log(WP_Query $query, string $title): void
+//     {
+//         $message = sprintf(
+//             "%s, query=%d, stack=%s, main=%s, query=\n%s",
+//             $title,
+//             spl_object_id($query),
+//             json_encode($this->stack),
+//             var_export($this->isMainQuery(), true),
+//             $query->request
+//         );
 
-        $message = wp_slash($message);
-        $message = str_replace("\n", '\n', $message);
+//         $message = wp_slash($message);
+//         $message = str_replace("\n", '\n', $message);
 
-        printf('<script>console.log("%s");</script>', $message);
-    }
+//         printf('<script>console.log("%s");</script>', $message);
+//     }
 }
