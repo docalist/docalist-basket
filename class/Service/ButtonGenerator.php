@@ -243,6 +243,8 @@ class ButtonGenerator
         $setting = $this->basket->has($postID) ? $settings->classactive : $settings->classinactive;
         array_unshift($classes, $setting->getPhpValue());
 
+        array_unshift($classes, 'basketable');
+
         // Ok
         return $classes;
     }
